@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipes App</title>
+  </head>
+  <body>
+    <!-- TODO: scream and cry that i cant use react -->
+    <header>
+      <nav>
+        <h1>Recipe App</h1>
+        <ul>
+          <li><a href="#" data-section="home">Home</a></li>
+          <li><a href="#" data-section="recipes">Recipes</a></li>
+          <li><a href="#" data-section="categories">Categories</a></li>
+          <li><a href="#" data-section="favourites">Favorites</a></li>
+          <li><a href="#" data-section="login">Login</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="app-content">
+      <section id="home-section" class="active">
+        <h2>Welcome to the Recipe App!</h2>
+        <p>Discover delicious recipes from the BBC website.</p>
+      </section>
+
+      <section id="recipes-section" class="hidden">
+        <h2>All Recipes</h2>
+        <div id="recipe-list"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Recipe App</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

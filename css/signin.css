@@ -1,0 +1,128 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Hidden till JS updates display to block when active from event handler */
+.register-form {
+  display: none;
+}
+
+.auth-container {
+  background-color: #202020;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(25, 25, 25, 0.15),
+    0 4px 6px -2px rgba(20, 20, 20, 0.15);
+  width: 100%;
+  max-width: 450px;
+  padding: 2.5rem;
+  box-sizing: border-box;
+}
+
+.form-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  color: #ffffff;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 90%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background-color: #474747;
+  border: 1px solid #565656;
+  border-radius: 0.5rem;
+  outline: none;
+  color: #ffffff;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Stylings for active/onfocus form input state */
+.form-input:focus {
+  border-color: #ffa500;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7);
+}
+
+.btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #ffa500;
+  color: #ffffff;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover {
+  background-color: #e69500;
+  transform: translateY(-1px);
+}
+
+.form-switch-text {
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.875rem;
+  margin-top: 1.5rem;
+}
+
+.switch-link {
+  color: #ffa500;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.switch-link:hover {
+  color: #e69500;
+  text-decoration: underline;
+}
+
+.sign-in-state {
+  background-color: #288154;
+  color: #dcfdf6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: none; /* Will update via JS in showSignInStatus function*/
+  text-align: center;
+  font-weight: 500;
+}
+
+.sign-in-state.error {
+  background-color: #dc2c2c;
+  color: #facbcb;
+}
+
+.sign-in-state.show {
+  display: block;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 1.5rem;
+    margin: 10px;
+  }
+}

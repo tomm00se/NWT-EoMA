@@ -1,128 +1,188 @@
+/* Base body styling for consistent layout */
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #000000;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-/* Hidden till JS updates display to block when active from event handler */
-.register-form {
-  display: none;
-}
-
+/* Base auth-container styling with smooth transitions */
 .auth-container {
-  background-color: #202020;
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(25, 25, 25, 0.15),
-    0 4px 6px -2px rgba(20, 20, 20, 0.15);
-  width: 100%;
-  max-width: 450px;
-  padding: 2.5rem;
-  box-sizing: border-box;
+    background-color: #202020;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(25, 25, 25, 0.15),
+        0 4px 6px -2px rgba(20, 20, 20, 0.15);
+    width: 100%;
+    max-width: 450px;
+    padding: 2.5rem;
+    box-sizing: border-box;
+    position: absolute; /* Allow containers to overlap during transitions */
+    
+    /* Smooth opacity and transform transitions */
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.492s ease-in-out, transform 0.492s ease-in-out;
+    pointer-events: auto;
+}
+
+/* Sign-in container - optimized height for sign-in form */
+.sign-in-container {
+    min-height: 400px; /* Compact height for sign-in */
+    
+    /* Initial page load animation */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInContainer 0.492s ease-out forwards;
+}
+
+/* Register container - taller height for registration form */
+.register-container {
+    min-height: 550px; /* Taller height for additional fields */
+    
+    /* Initially hidden - will fade in when needed */
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+}
+
+/* Page load animation keyframes */
+@keyframes fadeInContainer {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade-out states for smooth transitions */
+.auth-container.fade-out {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
+}
+
+/* Fade-in states for smooth transitions */
+.auth-container.fade-in {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+/* Form styling - consistent across both forms */
+.sign-in-form, .register-form {
+    width: 100%;
 }
 
 .form-title {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
 }
 
 .form-label {
-  display: block;
-  color: #ffffff;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+    display: block;
+    color: #ffffff;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
 }
 
 .form-input {
-  width: 90%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  background-color: #474747;
-  border: 1px solid #565656;
-  border-radius: 0.5rem;
-  outline: none;
-  color: #ffffff;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    width: 90%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    background-color: #474747;
+    border: 1px solid #565656;
+    border-radius: 0.5rem;
+    outline: none;
+    color: #ffffff;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-/* Stylings for active/onfocus form input state */
+/* Active/focus input styling with cybersecurity-themed orange accent */
 .form-input:focus {
-  border-color: #ffa500;
-  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7);
+    border-color: #ffa500;
+    box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7);
 }
 
 .btn {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-  border: none;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    border: none;
 }
 
 .btn-primary {
-  background-color: #ffa500;
-  color: #ffffff;
-  margin-top: 1rem;
+    background-color: #ffa500;
+    color: #202020;
+    margin-top: 1rem;
 }
 
 .btn-primary:hover {
-  background-color: #e69500;
-  transform: translateY(-1px);
+    background-color: #e69500;
+    transform: translateY(-1px);
 }
 
 .form-switch-text {
-  text-align: center;
-  color: #ffffff;
-  font-size: 0.875rem;
-  margin-top: 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    font-size: 0.875rem;
+    margin-top: 1.5rem;
 }
 
 .switch-link {
-  color: #ffa500;
-  font-weight: 500;
-  text-decoration: none;
+    color: #ffa500;
+    font-weight: 500;
+    text-decoration: none;
 }
 
 .switch-link:hover {
-  color: #e69500;
-  text-decoration: underline;
+    color: #e69500;
+    text-decoration: underline;
 }
 
+/* Status message styling for user feedback */
 .sign-in-state {
-  background-color: #288154;
-  color: #dcfdf6;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  display: none; /* Will update via JS in showSignInStatus function*/
-  text-align: center;
-  font-weight: 500;
+    background-color: #288154;
+    color: #dcfdf6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: none; /* Controlled via JavaScript */
+    text-align: center;
+    font-weight: 500;
 }
 
 .sign-in-state.error {
-  background-color: #dc2c2c;
-  color: #facbcb;
+    background-color: #dc2c2c;
+    color: #facbcb;
 }
 
 .sign-in-state.show {
-  display: block;
+    display: block;
 }
 
-/* Responsive design */
+/* Responsive design for mobile devices */
 @media (max-width: 600px) {
-  .auth-container {
-    padding: 1.5rem;
-    margin: 10px;
-  }
+    .auth-container {
+        padding: 1.5rem;
+        margin: 10px;
+    }
+    
+    .sign-in-container {
+        min-height: 350px;
+    }
+    
+    .register-container {
+        min-height: 500px;
+    }
 }

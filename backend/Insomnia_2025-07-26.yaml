@@ -1,0 +1,427 @@
+type: collection.insomnia.rest/5.0
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1743407674117
+  modified: 1743407674117
+collection:
+  - url: http://localhost/Networks/recipe/public/api/user/registration
+    name: Registration
+    meta:
+      id: req_ce39562401554b759b5c9a509a3f89fc
+      created: 1753485437307
+      modified: 1753487828146
+      isPrivate: false
+      sortKey: -1753485437307
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_330383a609f040c3ba8832bee6de1f5b
+          name: name
+          value: test12333
+          disabled: false
+        - id: pair_45a8dfc88ef84422b442c191ba6eeedb
+          name: email
+          value: test@test33333.com
+          disabled: false
+        - id: pair_aecb4e8c9a6b4d82bf083fbd0a415c76
+          name: password
+          value: 123123123123aa
+          disabled: false
+    headers:
+      - name: User-Agent
+        value: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101
+          Firefox/141.0
+      - name: Accept
+        value: "*/*"
+      - name: Accept-Language
+        value: en-US,en;q=0.5
+      - name: Accept-Encoding
+        value: gzip, deflate, br, zstd
+      - name: Referer
+        value: http://localhost/Networks/recipe/public/user.php
+      - name: Content-Type
+        value: multipart/form-data;
+          boundary=----geckoformboundary836b0e3e56164a30a8a084c31d6f80fb
+      - name: Origin
+        value: http://localhost
+      - name: Sec-GPC
+        value: "1"
+      - name: Connection
+        value: keep-alive
+      - name: Sec-Fetch-Dest
+        value: empty
+      - name: Sec-Fetch-Mode
+        value: cors
+      - name: Sec-Fetch-Site
+        value: same-origin
+      - name: Priority
+        value: u=0
+      - name: Pragma
+        value: no-cache
+      - name: Cache-Control
+        value: no-cache
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/user/login
+    name: Login
+    meta:
+      id: req_ebc9165eff4e40ed80b8bfb237a67a18
+      created: 1753485554803
+      modified: 1753488882014
+      isPrivate: false
+      sortKey: -1753485428437.5
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_45a8dfc88ef84422b442c191ba6eeedb
+          name: email
+          value: test@test3333.com
+          disabled: false
+        - id: pair_aecb4e8c9a6b4d82bf083fbd0a415c76
+          name: password
+          value: 123123123123aa
+          disabled: false
+    headers:
+      - name: User-Agent
+        value: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101
+          Firefox/141.0
+      - name: Accept
+        value: "*/*"
+      - name: Accept-Language
+        value: en-US,en;q=0.5
+      - name: Accept-Encoding
+        value: gzip, deflate, br, zstd
+      - name: Referer
+        value: http://localhost/Networks/recipe/public/user.php
+      - name: Content-Type
+        value: multipart/form-data;
+          boundary=----geckoformboundary836b0e3e56164a30a8a084c31d6f80fb
+      - name: Origin
+        value: http://localhost
+      - name: Sec-GPC
+        value: "1"
+      - name: Connection
+        value: keep-alive
+      - name: Sec-Fetch-Dest
+        value: empty
+      - name: Sec-Fetch-Mode
+        value: cors
+      - name: Sec-Fetch-Site
+        value: same-origin
+      - name: Priority
+        value: u=0
+      - name: Pragma
+        value: no-cache
+      - name: Cache-Control
+        value: no-cache
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/recipes/getAll
+    name: GetAll Recipes
+    meta:
+      id: req_e4bae83efdd54636ac3ef2e6321355b5
+      created: 1753485646576
+      modified: 1753487727940
+      isPrivate: false
+      sortKey: -1753485646576
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/recipes/getById?id=5
+    name: GetById Recipes
+    meta:
+      id: req_34f7bec2d7cd41cf840e56073343ebcf
+      created: 1753486235109
+      modified: 1753488080100
+      isPrivate: false
+      sortKey: -1753486235109
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/recipes/getByName?name=Mango
+    name: GetByName Recipes
+    meta:
+      id: req_adcf902769334dbd9313569a88d079ea
+      created: 1753486518300
+      modified: 1753486757729
+      isPrivate: false
+      sortKey: -1753486518300
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/favourites/getByUser
+    name: GetFavouritesByUser
+    meta:
+      id: req_6bb3d157b26c40468e5b8841263a591d
+      created: 1753488154739
+      modified: 1753488172188
+      isPrivate: false
+      sortKey: -1753488154739
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/favourites/add/
+    name: SaveFavourites
+    meta:
+      id: req_4a0ea3dabc48465d9c559dac0084e863
+      created: 1753488185747
+      modified: 1753489417028
+      isPrivate: false
+      sortKey: -1753487336519.5
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: recipe_id
+          value: "4"
+          id: pair_91fc29d0cc834a8f8a68880a456137bd
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/11.0.1
+        id: pair_be0f001ec4aa46efba73a95789d9b605
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/user/logout/
+    name: Logout
+    meta:
+      id: req_b5c89f801c104e02a7c7dbda8948e879
+      created: 1753489135494
+      modified: 1753489251792
+      isPrivate: false
+      sortKey: -1748446561569.25
+    method: POST
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/favourites/remove/
+    name: RemoveFavourite
+    meta:
+      id: req_3fa07170c5bf439287cf5db4ec09f6b1
+      created: 1753489401235
+      modified: 1753489407979
+      isPrivate: false
+      sortKey: -1753486927409.75
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: recipe_id
+          value: "2"
+          id: pair_91fc29d0cc834a8f8a68880a456137bd
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/11.0.1
+        id: pair_be0f001ec4aa46efba73a95789d9b605
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/ratings/rate/
+    name: RateRecipe
+    meta:
+      id: req_697c9cadfbd84fc9913ccb499363950f
+      created: 1753489903912
+      modified: 1753489970766
+      isPrivate: false
+      sortKey: -1753489903912
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - id: pair_0d8404e409eb4b359d763bbbc22fccc7
+          name: recipe_id
+          value: "1"
+          disabled: false
+        - id: pair_a8ee047af90d4c51b20d93b82ad686c4
+          name: rating
+          value: "5"
+          disabled: false
+        - id: pair_29b8ecd1fe514eae83adfe34edf1285e
+          name: comment
+          value: It is delicious
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/ratings/getByRecipe?recipe_id=2
+    name: GetRatingsByRecipeId
+    meta:
+      id: req_28f4bf1a496b4bfda1e92e19e7237525
+      created: 1753489981074
+      modified: 1753490254292
+      isPrivate: false
+      sortKey: -1753489981074
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/Networks/recipe/public/api/recipes/getFull?id=1
+    name: GetById Recipes - Full
+    meta:
+      id: req_ba6b4804f22946e08df562aadbb829bd
+      created: 1753490511084
+      modified: 1753490520122
+      isPrivate: false
+      sortKey: -1753485940842.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1743407683136
+    modified: 1753487728073
+  cookies:
+    - key: session-id
+      value: 130-4384940-2634658
+      domain: amazon.com
+      path: /
+      secure: true
+      hostOnly: false
+      creation: 2025-03-31T07:54:59.609Z
+      lastAccessed: 2025-03-31T12:06:09.212Z
+      id: 21cf19b6-40d3-4412-9283-142655d86cf1
+    - key: session-id-time
+      value: 2082787201l
+      domain: amazon.com
+      path: /
+      secure: true
+      hostOnly: false
+      creation: 2025-03-31T07:54:59.613Z
+      lastAccessed: 2025-03-31T12:06:09.212Z
+      id: c5ec6dbd-479f-4390-9dfe-daadb8b42855
+    - key: ubid-main
+      value: 132-5919523-9115931
+      domain: amazon.com
+      path: /
+      secure: true
+      hostOnly: false
+      creation: 2025-03-31T07:55:19.671Z
+      lastAccessed: 2025-03-31T07:55:19.671Z
+      id: 37cf5160-c4fc-4f0f-9fc7-7e301be035e7
+    - key: session-token
+      value: DHwozTK1sWUeXcDCimIcAgr3Qhba/dUUXMg3wIWGFLDTnu6ZmSMiaO+YXQiq4x9dtLCcrsoi/VdRXnQD8apzfMtg/CkoIK1DlTpfCLvTclYJT6ODAWRPArF5qGqYY2tKNzXcJY6kXU6SB4dsHDKZ0tP3I8pRpjQvOgL3H0s0WPgNQ/1B8BoQOCYDJMrmhDlRmTJaMfot9o5Z/P1sMA86Lw==
+      domain: amazon.com
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: false
+      creation: 2025-03-31T07:55:20.967Z
+      lastAccessed: 2025-03-31T12:06:09.212Z
+      id: cedaaa3e-4360-47fa-bec2-afdb05c8b9da
+    - key: PHPSESSID
+      value: lj60nuqsatubqh7ka65o2l0pn6
+      domain: localhost
+      path: /
+      hostOnly: true
+      creation: 2025-07-25T23:55:28.073Z
+      lastAccessed: 2025-07-25T23:55:28.073Z
+      id: c08dd24e-9891-4df5-877a-d550f26688e2
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1743407682938
+    modified: 1743407682938
+    isPrivate: false

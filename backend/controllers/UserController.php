@@ -1,57 +1,70 @@
 <?php
-require_once __DIR__ . '/../models/UserModel.php';
-require_once __DIR__ . '/../views/UserView.php';
+require_once __DIR__ . '/../services/UserService.php';
+//require_once __DIR__ . '/../models/UserModel.php';
+//require_once __DIR__ . '/../views/UserView.php';
 
 class UserController {
     
-    private $model;
-    private $view;
+    //private $model;
+    //private $view;
+    private $service;
 
     public function __construct() {
-        $this->model = new UserModel();
-        $this->view = new UserView();
+        //$this->model = new UserModel();
+        //$this->view = new UserView();
+        $this->service = new UserService();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        header('Content-Type: application/json');
     }
 
-    private function validate($name, $email, $password) {
-        if (empty($name) || empty($email) || empty($password)) {
-            return "All fields are required.";
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return "Invalid email format.";
-        }
-        if (!preg_match('/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $password)) {
-            return "Password must be at least 8 alphanumeric characters.";
-        }
-        return true;
-    }
+    //Luis, business logic => Service
+    // private function validate($name, $email, $password) {
+    //     if (empty($name) || empty($email) || empty($password)) {
+    //         return "All fields are required.";
+    //     }
+    //     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //         return "Invalid email format.";
+    //     }
+    //     if (!preg_match('/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $password)) {
+    //         return "Password must be at least 8 alphanumeric characters.";
+    //     }
+    //     return true;
+    // }
 
     // Registration endpoint
     public function register() {
-        $data = $_POST;
+        //$data = $_POST; => the endpoint should be agnostic to the type of input, but this would only work with php form
+        $data = json_decode(file_get_contents("php://input"), true);
         $name = trim($data['name'] ?? '');
         $email = trim($data['email'] ?? '');
         $password = $data['password'] ?? '';
         $dietary_preference = $data['dietary_preference'] ?? 'none';
+        
 
-        $validation = $this->validate($name, $email, $password);
+        $validation = $this->service->validateRegistration($name, $email, $password);
         if ($validation !== true) {
             http_response_code(400);
             echo json_encode(["message" => $validation]);
             return;
         }
 
-        $success = $this->model->register($name, $email, $password, $dietary_preference);
+        //Luis: changed the name of the service to better represent what it does (Check if this throws and if so put on a try catch)
+        $success = $this->service->registerUser($name, $email, $password, $dietary_preference);
         if ($success) {
             echo json_encode(["message" => "Registration successful!"]);
         } else {
             http_response_code(400);
             echo json_encode(["message" => "Registration failed. Email may already exist."]);
         }
+
     }
 
     // Login endpoint
     public function login() {
-        $data = $_POST;
+        //$data = $_POST;
+        $data = json_decode(file_get_contents("php://input"), true);
         $email = trim($data['email'] ?? '');
         $password = $data['password'] ?? '';
 
@@ -61,22 +74,25 @@ class UserController {
             return;
         }
 
-        $user = $this->model->login($email, $password);
+        $user = $this->service->authenticateUser($email, $password);
         if ($user) {
-            if (session_status() === PHP_SESSION_NONE) {
-                $cookieParams = session_get_cookie_params();
-                session_set_cookie_params([
-                    'lifetime' => 86400, // 1 day
-                    'path' => $cookieParams['path'],
-                    'secure' => $cookieParams['secure'],
-                    'httponly' => $cookieParams['httponly']
-                ]);
-                session_start();
-            }
+            //Luis: business logic => Service
+            // if (session_status() === PHP_SESSION_NONE) {
+            //     $cookieParams = session_get_cookie_params();
+            //     session_set_cookie_params([
+            //         'lifetime' => 86400, // 1 day
+            //         'path' => $cookieParams['path'],
+            //         'secure' => $cookieParams['secure'],
+            //         'httponly' => $cookieParams['httponly']
+            //     ]);
+            //     session_start();
+            // }
+
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['dietary_preference'] = $user['dietary_preference'];
+
             echo json_encode([
                 "message" => "Login successful!",
                 "user" => [
@@ -94,9 +110,10 @@ class UserController {
 
     // Logout endpoint
     public function logout() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        //Luis: this didn't make sense to me :p
+        // if (session_status() === PHP_SESSION_NONE) {
+        //     session_start();
+        // }
         session_unset();
         session_destroy();
         echo json_encode(["message" => "Logout successful."]);

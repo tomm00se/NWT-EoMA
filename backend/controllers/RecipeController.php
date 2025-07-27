@@ -1,41 +1,56 @@
 <?php
-require_once __DIR__ . '/../models/RecipeModel.php';
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../services/RecipeService.php';
+
 
 class RecipeController {
-    private function checkSession() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login.php');
-            exit;
-        }
-    }
-    
-    
-    private $recipeModel;
+
+    private $service;
 
     public function __construct() {
-        $this->recipeModel = new RecipeModel();
+        //Luis : inits session on construct vs on check session
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $this->service = new RecipeService();
+        //Luis : since every method is of application/json we can simply declare on the ctor and remove it everywhere else
+        header('Content-Type: application/json');
     }
 
     public function getAllRecipes() {
         $this->checkSession();
-        $recipes = $this->recipeModel->fetchAllRecipes();
-        header('Content-Type: application/json');
-        echo json_encode($recipes);
+        //Luis: calling the RecipeService
+        echo json_encode($this->service->getAllRecipes());
     }
 
+    //Luis commented because duplicated, we can use only the full
+    // public function getRecipeByName($name) {
+    //     $this->checkSession();
+        
+    //     $validation = $this->validateRecipeName($name);
+    //     if (!$validation['valid']) {
+    //         http_response_code(400);
+    //         echo json_encode(['error' => $validation['error']]);
+    //         return;
+    //     }
+
+    //     $recipes = $this->recipeModel->fetchRecipeByName($name);
+    //     if ($recipes && count($recipes) > 0) {
+    //         echo json_encode($recipes);
+    //     } else {
+    //         http_response_code(404);
+    //         echo json_encode(['error' => 'No recipes found.']);
+    //     }
+    // }
+
+    //Luis changed the name of the function to better reflect what it does
     public function getRecipeById($id) {
         $this->checkSession();
-        header('Content-Type: application/json');
+
         if (!is_numeric($id)) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid recipe ID.']);
             return;
         }
-        $recipe = $this->recipeModel->fetchRecipeById($id);
+        //Luis we call the service
+        $recipe = $this->service->getFullRecipe($id);
         if ($recipe) {
             echo json_encode($recipe);
         } else {
@@ -44,43 +59,74 @@ class RecipeController {
         }
     }
 
-    public function getRecipeByName($name) {
+    //Luis create endpoint
+    public function createRecipe() {
         $this->checkSession();
-        header('Content-Type: application/json');
-        
-        $validation = $this->validateRecipeName($name);
-        if (!$validation['valid']) {
-            http_response_code(400);
-            echo json_encode(['error' => $validation['error']]);
-            return;
-        }
 
-        $recipes = $this->recipeModel->fetchRecipeByName($name);
-        if ($recipes && count($recipes) > 0) {
-            echo json_encode($recipes);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'No recipes found.']);
+        $input = json_decode(file_get_contents("php://input"), true);
+
+        try {
+            $recipeId = $this->service->createRecipe($input, $_SESSION['user_id']);
+            http_response_code(201);
+            echo json_encode(['message' => 'Recipe created', 'recipe_id' => $recipeId]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
-    public function getFullRecipe($id) {
+    //Luis update endpoint
+    public function updateRecipe($id) {
         $this->checkSession();
-        header('Content-Type: application/json');
+
         if (!is_numeric($id)) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid recipe ID.']);
+            echo json_encode(['error' => 'Invalid recipe ID']);
             return;
         }
-        $recipe = $this->recipeModel->fetchFullRecipe($id);
-        if ($recipe) {
-            echo json_encode($recipe);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Recipe not found.']);
+
+        $input = json_decode(file_get_contents("php://input"), true);
+
+        try {
+            $this->service->updateRecipe($id, $input, $_SESSION['user_id']);
+            echo json_encode(['message' => 'Recipe updated']);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
+    //Luis delete endpoint
+    public function deleteRecipe($id) {
+        $this->checkSession();
+
+
+        if (!is_numeric($id)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid recipe ID']);
+            return;
+        }
+
+        try {
+            $this->service->deleteRecipe($id, $_SESSION['user_id']);
+            echo json_encode(['message' => 'Recipe deleted']);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+
+    private function checkSession() {
+        if (!isset($_SESSION['user_id'])) {
+            //Luis : we send also a 403 forbidden
+            http_response_code(403);
+            echo json_encode(["error" => "Unauthorized"]);
+            //Luis : this would be only if we're generating the html??? Maybe this logic is responsibility of front.
+            //header('Location: /login.php');
+            exit;
+        }
+    }
 
     private function validateRecipeName($name) {
         if (empty($name)) {

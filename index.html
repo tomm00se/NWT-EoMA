@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipes App</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="./css/index.css" />
+    <!-- Link to Google Fonts for Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <!-- TODO: scream and cry that i cant use react -->
     <header>
       <nav>
         <h1>Recipe App</h1>
@@ -21,14 +27,19 @@
     </header>
 
     <main id="app-content">
-      <section id="home-section" class="active">
+      <!-- The home-section is hidden by default -->
+      <section id="home-section" class="hidden">
         <h2>Welcome to the Recipe App!</h2>
         <p>Discover delicious recipes from the BBC website.</p>
       </section>
 
-      <section id="recipes-section" class="hidden">
+      <!-- The recipes-section is active by default -->
+      <section id="recipes-section" class="active">
         <h2>All Recipes</h2>
-        <div id="recipe-list"></div>
+        <div id="recipe-list">
+          <!-- Recipe cards will be dynamically populated here by JavaScript -->
+          <p id="loading-message">Loading recipes...</p>
+        </div>
       </section>
     </main>
 
@@ -36,6 +47,7 @@
       <p>&copy; 2025 Recipe App</p>
     </footer>
 
-    <script src="js/script.js"></script>
+    <!-- Link to external JavaScript file -->
+    <script src="./js/index.js"></script>
   </body>
 </html>

@@ -141,6 +141,11 @@ public function updateRecipe(int $id, array $data, int $userId) {
             $userId
         ]);
 
+        //If we are not the owners of the recipe, throw
+        if ($stmt->rowCount() === 0) {
+            throw new Exception("Recipe not found or unauthorized.");
+        }
+
         // Delete previous steps/ingredients/categories
         $this->db->prepare("DELETE FROM steps WHERE recipe_id = ?")->execute([$id]);
         $this->db->prepare("DELETE FROM recipe_ingredients WHERE recipe_id = ?")->execute([$id]);
@@ -161,6 +166,10 @@ public function updateRecipe(int $id, array $data, int $userId) {
 public function deleteRecipe(int $id, int $userId) {
     $stmt = $this->db->prepare("DELETE FROM recipes WHERE recipe_id = ? AND user_id = ?");
     $stmt->execute([$id, $userId]);
+
+    if ($stmt->rowCount() === 0) {
+        throw new Exception("Recipe not found or unauthorized.");
+    }
 }
 
 

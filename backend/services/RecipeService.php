@@ -26,6 +26,7 @@ class RecipeService {
             throw new Exception("Invalid recipe ID.");
         }
 
+        //Luis validate userid = recipe user id
         $this->validateRecipeData($data);
         $this->model->updateRecipe($id, $data, $userId);
     }
@@ -34,7 +35,7 @@ class RecipeService {
         if (!is_numeric($id)) {
             throw new Exception("Invalid recipe ID.");
         }
-
+        //Luis validate userid = recipe user id
         $this->model->deleteRecipe($id, $userId);
     }
 

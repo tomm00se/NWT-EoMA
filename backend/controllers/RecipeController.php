@@ -7,16 +7,13 @@ class RecipeController {
     private $service;
 
     public function __construct() {
-        //Luis : inits session on construct vs on check session
         if (session_status() === PHP_SESSION_NONE) session_start();
         $this->service = new RecipeService();
-        //Luis : since every method is of application/json we can simply declare on the ctor and remove it everywhere else
         header('Content-Type: application/json');
     }
 
     public function getAllRecipes() {
         $this->checkSession();
-        //Luis: calling the RecipeService
         echo json_encode($this->service->getAllRecipes());
     }
 
@@ -49,7 +46,7 @@ class RecipeController {
             echo json_encode(['error' => 'Invalid recipe ID.']);
             return;
         }
-        //Luis we call the service
+        
         $recipe = $this->service->getFullRecipe($id);
         if ($recipe) {
             echo json_encode($recipe);
@@ -59,7 +56,6 @@ class RecipeController {
         }
     }
 
-    //Luis create endpoint
     public function createRecipe() {
         $this->checkSession();
 
@@ -75,7 +71,7 @@ class RecipeController {
         }
     }
 
-    //Luis update endpoint
+    
     public function updateRecipe($id) {
         $this->checkSession();
 
@@ -96,10 +92,8 @@ class RecipeController {
         }
     }
 
-    //Luis delete endpoint
     public function deleteRecipe($id) {
         $this->checkSession();
-
 
         if (!is_numeric($id)) {
             http_response_code(400);
@@ -116,14 +110,10 @@ class RecipeController {
         }
     }
 
-
     private function checkSession() {
         if (!isset($_SESSION['user_id'])) {
-            //Luis : we send also a 403 forbidden
             http_response_code(403);
             echo json_encode(["error" => "Unauthorized"]);
-            //Luis : this would be only if we're generating the html??? Maybe this logic is responsibility of front.
-            //header('Location: /login.php');
             exit;
         }
     }

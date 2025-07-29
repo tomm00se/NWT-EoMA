@@ -32,15 +32,4 @@ class UserService {
         return $this->model->login($email, $password);
     }
 
-
-    private function generateCookies($email, $password) {
-        session_set_cookie_params([
-            //check if this works
-            'lifetime' => 86400, 1 day
-            'path' => "/", 
-            'secure' => true,
-            'httponly' => true
-        ]);
-        session_start();
-    } 
 }

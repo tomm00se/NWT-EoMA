@@ -15,16 +15,16 @@ class RecipeModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    //Luis: Using the fecthFullRecipe
-    // public function fetchRecipeById($id) {
-    //     $stmt = $this->db->prepare("SELECT * FROM recipes WHERE recipe_id = ? LIMIT 1");
-    //     $stmt->execute([$id]);
-    //     return $stmt->fetch(PDO::FETCH_ASSOC);
-    // }
 
     public function fetchRecipeByName($name) {
         $stmt = $this->db->prepare("SELECT * FROM recipes WHERE title LIKE ?");
         $stmt->execute(['%' . $name . '%']);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function fetchRecipesByUser(int $userId): array {
+        $stmt = $this->db->prepare("SELECT * FROM recipes WHERE user_id = ?");
+        $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -56,6 +56,14 @@ class RecipeModel {
         $recipe['steps'] = $steps;
         return $recipe;
     }
+
+    public function getRecipeOwnerId(int $recipeId): ?int {
+        $stmt = $this->db->prepare("SELECT user_id FROM recipes WHERE recipe_id = ?");
+        $stmt->execute([$recipeId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['user_id'] : null;
+    }
+
 
     public function insertRecipe(array $data, int $userId) {
     $this->db->beginTransaction();

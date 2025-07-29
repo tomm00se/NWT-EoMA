@@ -12,6 +12,10 @@ class RecipeService {
         return $this->model->fetchAllRecipes();
     }
 
+    public function getRecipesByUser(int $userId) {
+    return $this->model->fetchRecipesByUser($userId);
+    }
+
     public function getFullRecipe($id) {
         return $this->model->fetchFullRecipe($id);
     }
@@ -26,7 +30,12 @@ class RecipeService {
             throw new Exception("Invalid recipe ID.");
         }
 
-        //Luis validate userid = recipe user id
+        //validate userid = recipe user id
+        $ownerId = $this->model->getRecipeOwnerId($id);
+        if ((int)$ownerId !== (int)$userId) {
+            throw new Exception("You are not authorized to modify this recipe.");
+        }
+
         $this->validateRecipeData($data);
         $this->model->updateRecipe($id, $data, $userId);
     }
@@ -35,7 +44,13 @@ class RecipeService {
         if (!is_numeric($id)) {
             throw new Exception("Invalid recipe ID.");
         }
-        //Luis validate userid = recipe user id
+        
+        //validate userid = recipe user id
+        $ownerId = $this->model->getRecipeOwnerId($id);
+        if ((int)$ownerId !== (int)$userId) {
+            throw new Exception("You are not authorized to modify this recipe.");
+        }
+
         $this->model->deleteRecipe($id, $userId);
     }
 

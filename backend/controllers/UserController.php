@@ -6,15 +6,22 @@ class UserController {
     
     private $service;
 
-    public function __construct() {
-
-        $this->service = new UserService();
-    
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        header('Content-Type: application/json');
+   public function __construct() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_set_cookie_params([
+            'lifetime' => 86400,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        session_start();
     }
+
+    header('Content-Type: application/json');
+    $this->service = new UserService();
+    }
+
 
     // Registration endpoint
     public function register() {
@@ -56,8 +63,6 @@ class UserController {
 
         $user = $this->service->authenticateUser($email, $password);
         if ($user) {
-
-            $this->service->generateCookies();
 
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['name'] = $user['name'];

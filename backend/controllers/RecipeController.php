@@ -17,27 +17,6 @@ class RecipeController {
         echo json_encode($this->service->getAllRecipes());
     }
 
-    //Luis commented because duplicated, we can use only the full
-    // public function getRecipeByName($name) {
-    //     $this->checkSession();
-        
-    //     $validation = $this->validateRecipeName($name);
-    //     if (!$validation['valid']) {
-    //         http_response_code(400);
-    //         echo json_encode(['error' => $validation['error']]);
-    //         return;
-    //     }
-
-    //     $recipes = $this->recipeModel->fetchRecipeByName($name);
-    //     if ($recipes && count($recipes) > 0) {
-    //         echo json_encode($recipes);
-    //     } else {
-    //         http_response_code(404);
-    //         echo json_encode(['error' => 'No recipes found.']);
-    //     }
-    // }
-
-    //Luis changed the name of the function to better reflect what it does
     public function getRecipeById($id) {
         $this->checkSession();
 
@@ -54,6 +33,12 @@ class RecipeController {
             http_response_code(404);
             echo json_encode(['error' => 'Recipe not found.']);
         }
+    }
+    
+    public function getMyRecipes() {
+        $this->checkSession();
+        $recipes = $this->service->getRecipesByUser($_SESSION['user_id']);
+        echo json_encode($recipes);
     }
 
     public function createRecipe() {

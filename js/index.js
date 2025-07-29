@@ -10,6 +10,7 @@ const recipesGrid = document.getElementById('recipesGrid');
 const filterBtns = document.querySelectorAll('.filter-btn');
 
 // Sample recipe data matching the assignment requirements
+// TODO: Implement actual PHP API
 const sampleRecipes = [
     {
         id: 1,
@@ -99,10 +100,10 @@ document.querySelectorAll('.nav-link').forEach(link => {
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const offsetTop = target.offsetTop - 70; // Account for fixed navbar
+        e.preventDefault(); // Cancels the default behavior of the anchor tag
+        const scrollTarget = document.querySelector(this.getAttribute('href'));
+        if (scrollTarget) {
+            const offsetTop = scrollTarget.offsetTop - 70; // Account for fixed navbar
             window.scrollTo({
                 top: offsetTop,
                 behavior: 'smooth'
@@ -126,6 +127,7 @@ function handleSearch() {
     const searchTerm = searchInput.value.trim().toLowerCase();
     if (searchTerm) {
         // Filter recipes based on search term
+        // TODO: Add search item to query the API
         const filteredRecipes = sampleRecipes.filter(recipe => 
             recipe.title.toLowerCase().includes(searchTerm) ||
             recipe.description.toLowerCase().includes(searchTerm) ||
@@ -152,6 +154,8 @@ function handleSearch() {
 
 searchBtn.addEventListener('click', handleSearch);
 
+// This event listener allows a user to press enter to search (keyboard navigation)
+// as opposed to using a pointer event
 searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         handleSearch();
@@ -276,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animateOnScroll();
     
     // Add entrance animation to hero elements
-    setTimeout(() => {
+    setTimeout(() => { // using setTime out to delay content delivery for UX
         document.querySelector('.hero-content').style.opacity = '1';
         document.querySelector('.hero-content').style.transform = 'translateY(0)';
     }, 100);

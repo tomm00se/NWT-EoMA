@@ -37,7 +37,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 70px;
+    height: 4.5rem;
 }
 
 .brand-title a {
@@ -107,8 +107,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 140px); /* Account for navbar and footer */
-    padding: 90px 20px 20px; /* Top padding for fixed navbar */
+    min-height: calc(100vh - 9rem); /* Account for navbar and footer */
+    padding: 5.8rem 1.2rem 1.2rem; /* Top padding for fixed navbar */
     position: relative;
 }
 
@@ -301,10 +301,10 @@ body {
 @media (max-width: 768px) {
     .nav-menu {
         position: fixed;
-        top: 70px;
+        top: 4.5rem;
         left: -100%;
         width: 100%;
-        height: calc(100vh - 70px);
+        height: calc(100vh - 4.5rem);
         background-color: #202020;
         flex-direction: column;
         justify-content: start;
@@ -334,21 +334,17 @@ body {
         transform: rotate(-45deg) translate(7px, -6px);
     }
 
-    .main-content {
-        padding: 90px 10px 20px;
-    }
-
     .auth-container {
         padding: 1.5rem;
-        margin: 10px;
+        margin: 1rem;
     }
 
     .sign-in-container {
-        min-height: 350px;
+        min-height: 22.5rem;
     }
 
     .register-container {
-        min-height: 500px;
+        min-height: 32rem;
     }
 
     .container {

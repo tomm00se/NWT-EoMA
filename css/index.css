@@ -41,7 +41,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 70px;
+    height: 4.5rem;
 }
 
 .brand-title a {
@@ -106,7 +106,7 @@ body {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding-top: 70px;
+    padding-top: 5.5rem;
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 

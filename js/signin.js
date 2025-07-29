@@ -12,11 +12,8 @@ const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
 
-/**
- * Display status messages to user with optional error styling
- * @param {string} message - The message to display
- * @param {boolean} isError - Whether this is an error message
- */
+
+// Display status messages to user with optional error styling
 function signInStatus(message, isError = false) {
     signInState.textContent = message;
     signInState.classList.remove("show", "error");
@@ -44,10 +41,7 @@ function switchToRegister() {
     }, 314); // Match CSS transition duration
 }
 
-/**
- * Smoothly transition from register to sign-in container
- * Uses fade-out/fade-in with 0.492s timing for professional feel
- */
+// Smoothly transition from register to sign-in container
 function switchToSignIn() {
     // Start fade-out of register container
     registerContainer.classList.remove("fade-in");

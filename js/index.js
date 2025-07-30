@@ -170,7 +170,7 @@ filterBtns.forEach(btn => {
         btn.classList.add('active');
         
         // Filter recipes
-        const filterValue = btn.getAttribute('data-filter');
+        const filterValue = btn.getAttribute('data-search-filter');
         let filteredRecipes;
         
         if (filterValue === 'all') {

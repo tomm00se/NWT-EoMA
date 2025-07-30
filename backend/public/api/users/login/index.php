@@ -9,9 +9,6 @@ $userController = new UserController();
 
 $requestUri = rtrim($_SERVER['REQUEST_URI'], '/');
 
-echo $requestUri;
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $userController->login();

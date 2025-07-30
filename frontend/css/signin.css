@@ -1,128 +1,363 @@
+/* Base body styling for consistent layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #000000;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Hidden till JS updates display to block when active from event handler */
-.register-form {
-  display: none;
+/* Navigation Styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(32, 32, 32, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+    border-bottom: 1px solid #565656;
 }
 
+.navbar.scrolled {
+    background-color: rgba(32, 32, 32, 0.98);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4.5rem;
+}
+
+.brand-title a {
+    font-size: 1.5rem;
+    font-weight: 00;
+    color: #ffa500;
+    text-decoration: none;
+}
+
+.brand-title a:hover {
+    color: #e69500;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.nav-link:hover {
+    color: #ffa500;
+}
+
+.signin-link {
+    background-color: #ffa500;
+    color: #202020 !important;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.signin-link:hover {
+    background-color: #e69500;
+    transform: translateY(-1px);
+}
+
+.signin-link.active {
+    background-color: #e69500;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+}
+
+.toggle-bar {
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 9rem); /* Account for navbar and footer */
+    padding: 5.8rem 1.2rem 1.2rem; /* Top padding for fixed navbar */
+    position: relative;
+}
+
+/* Base auth-container styling with smooth transitions */
 .auth-container {
-  background-color: #202020;
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(25, 25, 25, 0.15),
-    0 4px 6px -2px rgba(20, 20, 20, 0.15);
-  width: 100%;
-  max-width: 450px;
-  padding: 2.5rem;
-  box-sizing: border-box;
+    background-color: #202020;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(25, 25, 25, 0.15),
+                0 4px 6px -2px rgba(20, 20, 20, 0.15);
+    width: 100%;
+    max-width: 450px;
+    padding: 2.5rem;
+    box-sizing: border-box;
+    position: absolute; /* Allow containers to overlap during transitions */
+    /* Smooth opacity and transform transitions */
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.492s ease-in-out, transform 0.492s ease-in-out;
+    pointer-events: auto;
+    border: 1px solid #565656;
+}
+
+/* Sign-in container - optimized height for sign-in form */
+.sign-in-container {
+    min-height: 400px; /* Compact height for sign-in */
+    /* Initial page load animation */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInContainer 0.492s ease-out forwards;
+}
+
+/* Register container - taller height for registration form */
+.register-container {
+    min-height: 550px; /* Taller height for additional fields */
+    /* Initially hidden - will fade in when needed */
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+}
+
+/* Page load animation keyframes */
+@keyframes fadeInContainer {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade-out states for smooth transitions */
+.auth-container.fade-out {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
+}
+
+/* Fade-in states for smooth transitions */
+.auth-container.fade-in {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+/* Form styling - consistent across both forms */
+.sign-in-form, .register-form {
+    width: 100%;
 }
 
 .form-title {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
 }
 
 .form-label {
-  display: block;
-  color: #ffffff;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+    display: block;
+    color: #ffffff;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
 }
 
 .form-input {
-  width: 90%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  background-color: #474747;
-  border: 1px solid #565656;
-  border-radius: 0.5rem;
-  outline: none;
-  color: #ffffff;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    background-color: #474747;
+    border: 1px solid #565656;
+    border-radius: 0.5rem;
+    outline: none;
+    color: #ffffff;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-/* Stylings for active/onfocus form input state */
+/* Active/focus input styling with cybersecurity-themed orange accent */
 .form-input:focus {
-  border-color: #ffa500;
-  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7);
+    border-color: #ffa500;
+    box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7);
 }
 
 .btn {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-  border: none;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    border: none;
 }
 
 .btn-primary {
-  background-color: #ffa500;
-  color: #ffffff;
-  margin-top: 1rem;
+    background-color: #ffa500;
+    color: #202020;
+    margin-top: 1rem;
 }
 
 .btn-primary:hover {
-  background-color: #e69500;
-  transform: translateY(-1px);
+    background-color: #e69500;
+    transform: translateY(-1px);
 }
 
 .form-switch-text {
-  text-align: center;
-  color: #ffffff;
-  font-size: 0.875rem;
-  margin-top: 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    font-size: 0.875rem;
+    margin-top: 1.5rem;
 }
 
 .switch-link {
-  color: #ffa500;
-  font-weight: 500;
-  text-decoration: none;
+    color: #ffa500;
+    font-weight: 500;
+    text-decoration: none;
 }
 
 .switch-link:hover {
-  color: #e69500;
-  text-decoration: underline;
+    color: #e69500;
+    text-decoration: underline;
 }
 
+/* Status message styling for user feedback */
 .sign-in-state {
-  background-color: #288154;
-  color: #dcfdf6;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  display: none; /* Will update via JS in showSignInStatus function*/
-  text-align: center;
-  font-weight: 500;
+    background-color: #288154;
+    color: #dcfdf6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: none; /* Controlled via JavaScript */
+    text-align: center;
+    font-weight: 500;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 450px;
+    width: calc(100% - 40px);
+    z-index: 10;
 }
 
 .sign-in-state.error {
-  background-color: #dc2c2c;
-  color: #facbcb;
+    background-color: #dc2c2c;
+    color: #facbcb;
 }
 
 .sign-in-state.show {
-  display: block;
+    display: block;
 }
 
-/* Responsive design */
-@media (max-width: 600px) {
-  .auth-container {
-    padding: 1.5rem;
-    margin: 10px;
-  }
+/* Container class for footer */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Footer */
+.footer {
+    background-color: #202020;
+    padding: 0 0 1rem;
+    margin-top: auto;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #565656;
+    color: #cccccc;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 4.5rem;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 4.5rem);
+        background-color: #202020;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        padding-top: 2rem;
+        transition: left 0.3s ease;
+        gap: 1rem;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-toggle.active .toggle-bar:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.active .toggle-bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle.active .toggle-bar:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    .auth-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .sign-in-container {
+        min-height: 22.5rem;
+    }
+
+    .register-container {
+        min-height: 32rem;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 1rem;
+    }
+    
+    .brand-title {
+        font-size: 1.25rem;
+    }
 }

@@ -1,75 +1,137 @@
-const signInForm = document.getElementById("signInForm");
-const registerForm = document.getElementById("registerForm");
+// DOM element references
+const signInContainer = document.getElementById("signInContainer");
+const registerContainer = document.getElementById("registerContainer");
 const showRegisterLink = document.getElementById("showRegister");
 const showSignInLink = document.getElementById("showSignIn");
 const loginForm = document.getElementById("loginForm");
 const registrationForm = document.getElementById("registrationForm");
 const signInState = document.getElementById("signInState");
 
-function signInStatus(message, isError = false) {
-  signInState.textContent = message;
-  signInState.classList.remove("show", "error");
-  if (isError) {
-    signInState.classList.add("error");
-  }
-  signInState.classList.add("show");
+// Navigation elements
+const navbar = document.getElementById('navbar');
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
 
-  // Hide the message after 5 seconds (This should be enough time for most users to read notification message)
-  setTimeout(() => {
-    signInState.classList.remove("show");
-  }, 5000);
+
+// Display status messages to user with optional error styling
+function signInStatus(message, isError = false) {
+    signInState.textContent = message;
+    signInState.classList.remove("show", "error");
+    if (isError) {
+        signInState.classList.add("error");
+    }
+    signInState.classList.add("show");
+    // Auto-hide message after 5 seconds
+    setTimeout(() => {
+        signInState.classList.remove("show");
+    }, 5000);
 }
 
-// Event listener to switch to the REGISTRATION FORM (Default state)
+/**
+ * Smoothly transition from sign-in to register container
+ * Uses fade-out/fade-in with 0.492s timing for professional feel
+ */
+function switchToRegister() {
+    // Start fade-out of sign-in container
+    signInContainer.classList.add("fade-out");
+    // After sign-in fades out, fade-in register container
+    setTimeout(() => {
+        registerContainer.classList.add("fade-in");
+        signInState.classList.remove("show"); // Clear any status messages
+    }, 314); // Match CSS transition duration
+}
+
+// Smoothly transition from register to sign-in container
+function switchToSignIn() {
+    // Start fade-out of register container
+    registerContainer.classList.remove("fade-in");
+    // After register fades out, fade-in sign-in container
+    setTimeout(() => {
+        signInContainer.classList.remove("fade-out");
+        signInState.classList.remove("show"); // Clear any status messages
+    }, 314); // Match CSS transition duration
+}
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Mobile navigation toggle
+navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
+
+// Close mobile menu when clicking on nav links
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
+
+// Event listener for switching to registration form
 showRegisterLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  signInForm.style.display = "none";
-  registerForm.style.display = "block";
-  signInState.classList.remove("show");
+    e.preventDefault();
+    switchToRegister();
 });
 
-// Event listener to switch to the SIGN-IN form
+// Event listener for switching to sign-in form
 showSignInLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  registerForm.style.display = "none";
-  signInForm.style.display = "block";
-  signInState.classList.remove("show");
+    e.preventDefault();
+    switchToSignIn();
 });
 
-// Handle Sign In form submission
+// Handle sign-in form submission
 loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
+    // TODO: Implement authentication logic
+    // TODO: Validate credentials against backend API
+    // TODO: Handle successful login (redirect to dashboard)
+    // TODO: Handle failed login (show error message)
 
-  // TODO: Check email and password exist
-  // TODO: If exist, navigate to homepage with user data populated via api call
-  // TODO: If !exist, inform
-  // TODO: If !exist, register
+    // Temporary feedback for development
+    signInStatus("Sign-in functionality coming soon!");
 });
 
-// Handle Registration form submission
+// Handle registration form submission
 registrationForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    const name = document.getElementById("registerName").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
 
-  const name = document.getElementById("registerName").value;
-  const email = document.getElementById("registerEmail").value;
-  const password = document.getElementById("registerPassword").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
+    // Client-side password validation
+    if (password !== confirmPassword) {
+        signInStatus("Passwords do not match.", true);
+        return;
+    }
 
-  if (password !== confirmPassword) {
-    signInStatus("Passwords do not match.", true);
-    return;
-  }
+    // TODO: Implement comprehensive email validation
+    // TODO: Send registration data to backend API
+    // TODO: Handle successful registration (auto-login or redirect)
+    // TODO: Handle registration errors (email exists, weak password, etc.)
 
-  // TODO: email validation check
-  // TODO: post request to make user in db via API call
-  // TODO: new user navigates to home page logged in
+    // Clear form after successful validation
+    registrationForm.reset();
+    // Provide user feedback and transition back to sign-in
+    signInStatus("Account created successfully! Please sign in.");
+    switchToSignIn();
+});
 
-  registrationForm.reset(); // Clear form
-
-  // Switch to sign-in form after simulated successful registration
-  signInForm.style.display = "block";
-  registerForm.style.display = "none";
+// Handle window resize for responsive navigation
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        navMenu.classList.remove('active');
+        navToggle.classList.remove('active');
+    }
 });

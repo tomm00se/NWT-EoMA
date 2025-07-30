@@ -1,18 +1,21 @@
 <?php
+session_start();
 require_once __DIR__ . '/../../../../controllers/RecipeController.php';
 
-$controller = new RecipeController();
+$recipeController = new RecipeController();
 
-parse_str($_SERVER['QUERY_STRING'], $params);
-$id = $params['id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    // Parse JSON body
+    $input = json_decode(file_get_contents("php://input"), true);
+    $recipeId = $input['id'] ?? null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && is_numeric($id)) {
-    $controller->deleteRecipe($id);
+    if ($recipeId) {
+        $recipeController->deleteRecipe($recipeId);
+    } else {
+        http_response_code(400);
+        echo json_encode(["error" => "Recipe ID is required."]);
+    }
 } else {
-    sendResponse405();
-}
-
-function sendResponse405() {
     http_response_code(405);
-    echo json_encode(["message" => "Method Not Allowed or missing ID"]);
+    echo json_encode(["error" => "Method Not Allowed"]);
 }

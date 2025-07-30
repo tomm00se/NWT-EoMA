@@ -22,7 +22,9 @@ class FavouriteController {
     public function addFavourite() {
         $this->checkSession();
         $userId = $_SESSION['user_id'];
-        $recipeId = $_POST['recipe_id'] ?? null;
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $recipeId = $input['recipe_id'] ?? null;
 
         if (!is_numeric($userId) || !is_numeric($recipeId)) {
             http_response_code(400);
@@ -30,11 +32,16 @@ class FavouriteController {
             return;
         }
 
-        if ($this->service->addFavourite($userId, $recipeId)) {
-            echo json_encode(['message' => 'Favourite added successfully.']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to add favourite.']);
+        try {
+            if ($this->service->addFavourite($userId, $recipeId)) {
+                echo json_encode(['message' => 'Favourite added successfully.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to add favourite.']);
+            }
+        } catch (Exception $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
@@ -55,7 +62,8 @@ class FavouriteController {
     public function removeFavourite() {
         $this->checkSession();
         $userId = $_SESSION['user_id'];
-        $recipeId = $_POST['recipe_id'] ?? null;
+        $input = json_decode(file_get_contents("php://input"), true);
+        $recipeId = $input['recipe_id'] ?? null;
 
         if (!is_numeric($userId) || !is_numeric($recipeId)) {
             http_response_code(400);
@@ -63,11 +71,16 @@ class FavouriteController {
             return;
         }
 
-        if ($this->service->removeFavourite($userId, $recipeId)) {
-            echo json_encode(['message' => 'Favourite removed successfully.']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to remove favourite.']);
+        try {
+            if ($this->service->removeFavourite($userId, $recipeId)) {
+                echo json_encode(['message' => 'Favourite removed successfully.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to remove favourite.']);
+            }
+        } catch (Exception $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
 }

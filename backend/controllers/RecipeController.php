@@ -13,12 +13,10 @@ class RecipeController {
     }
 
     public function getAllRecipes() {
-        $this->checkSession();
         echo json_encode($this->service->getAllRecipes());
     }
 
     public function getRecipeById($id) {
-        $this->checkSession();
 
         if (!is_numeric($id)) {
             http_response_code(400);
@@ -34,6 +32,22 @@ class RecipeController {
             echo json_encode(['error' => 'Recipe not found.']);
         }
     }
+
+    public function getRecipeByName($name) {
+        try {
+            $recipes = $this->service->getRecipeByName($name);
+            if ($recipes) {
+                echo json_encode($recipes);
+            } else {
+                http_response_code(404);
+                echo json_encode(["message" => "No recipe found with that name."]);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["error" => "Server error: " . $e->getMessage()]);
+        }
+    }
+
     
     public function getMyRecipes() {
         $this->checkSession();
@@ -42,18 +56,35 @@ class RecipeController {
     }
 
     public function createRecipe() {
-        $this->checkSession();
+    $this->checkSession();
 
-        $input = json_decode(file_get_contents("php://input"), true);
+    $input = json_decode(file_get_contents("php://input"), true);
 
-        try {
-            $recipeId = $this->service->createRecipe($input, $_SESSION['user_id']);
-            http_response_code(201);
-            echo json_encode(['message' => 'Recipe created', 'recipe_id' => $recipeId]);
-        } catch (Exception $e) {
+    // Validate required fields
+    $requiredFields = ['title', 'description', 'ingredients', 'steps', 'categories', 'total_time'];
+    foreach ($requiredFields as $field) {
+        if (!isset($input[$field]) || empty($input[$field])) {
             http_response_code(400);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode(['error' => "Missing or empty field: $field"]);
+            return;
         }
+    }
+
+    // Validate total_time is a positive number
+    if (!is_numeric($input['total_time']) || $input['total_time'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['error' => "Total time must be a positive number."]);
+        return;
+    }
+
+    try {
+        $recipeId = $this->service->createRecipe($input, $_SESSION['user_id']);
+        http_response_code(201);
+        echo json_encode(['message' => 'Recipe created', 'recipe_id' => $recipeId]);
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode(['error' => $e->getMessage()]);
+    }
     }
 
     

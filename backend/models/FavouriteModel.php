@@ -25,5 +25,11 @@ class FavouriteModel {
         $stmt = $this->db->prepare("DELETE FROM favourites WHERE user_id = ? AND recipe_id = ?");
         return $stmt->execute([$userId, $recipeId]);
     }
+
+    public function recipeExists($recipeId): bool {
+    $stmt = $this->db->prepare("SELECT 1 FROM recipes WHERE recipe_id = ?");
+    $stmt->execute([$recipeId]);
+    return (bool) $stmt->fetchColumn();
+}
 }
 ?>

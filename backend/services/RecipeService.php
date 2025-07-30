@@ -20,6 +20,11 @@ class RecipeService {
         return $this->model->fetchFullRecipe($id);
     }
 
+    public function getRecipeByName(string $name): ?array {
+        return $this->model->fetchRecipeByName($name);
+    }
+
+
     public function createRecipe($data, $userId) {
         $this->validateRecipeData($data);
         return $this->model->insertRecipe($data, $userId);

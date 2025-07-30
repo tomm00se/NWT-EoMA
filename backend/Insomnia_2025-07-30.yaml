@@ -1,0 +1,530 @@
+type: collection.insomnia.rest/5.0
+name: Scratch Pad
+meta:
+  id: wrk_82a8e6b2d3ef420a83c7d794835b4566
+  created: 1753864951589
+  modified: 1753864951589
+  description: ""
+collection:
+  - url: http://localhost/api/users/registration/
+    name: UserRegistration
+    meta:
+      id: req_8ec1e34b5a2e45aca808ead41905d5f8
+      created: 1753485437307
+      modified: 1753867587213
+      isPrivate: false
+      description: ""
+      sortKey: -1753485437307
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Test User",
+          "email": "test.user@example.com",
+          "password": "securepassword123",
+          "dietary_preference": "test"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - id: pair_4f290d0d39f74a6e84488123d633d1ec
+        name: Accept
+        value: application/json
+        description: ""
+        disabled: false
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/users/login/
+    name: UserLogin
+    meta:
+      id: req_e8962246ed97451db4f94592b05cd753
+      created: 1753485554803
+      modified: 1753869242113
+      isPrivate: false
+      description: ""
+      sortKey: -1753485428437.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "test.user@example.com",
+          "password": "securepassword123"
+        }
+    headers:
+      - id: pair_261fe05ccd454c9c9370375b011784f6
+        name: Content-Type
+        value: application/json
+        description: ""
+        disabled: false
+      - id: pair_c8f6c6b6934c4a298057024c2adb9375
+        name: Accept
+        value: application/json
+        description: ""
+        disabled: false
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/getAll/
+    name: GetAllRecipes
+    meta:
+      id: req_6a0d171044a74ffcbed7e770c18dc852
+      created: 1753485646576
+      modified: 1753867576709
+      isPrivate: false
+      description: ""
+      sortKey: -1753485646576
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/getByName?name=Couscous
+    name: GetRecipeByName
+    meta:
+      id: req_417dadcc5a7d401baa23871978162401
+      created: 1753486518300
+      modified: 1753868961202
+      isPrivate: false
+      description: ""
+      sortKey: -1753486518300
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/favourites/getmy/
+    name: GetMyFavourites
+    meta:
+      id: req_1a46b3273e4d4cecafaedb8dd1186cd9
+      created: 1753488154739
+      modified: 1753882151856
+      isPrivate: false
+      description: ""
+      sortKey: -1753488154739
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/favourites/add/
+    name: AddToFavourites
+    meta:
+      id: req_447bbc794520419b81fc21a8bf7b3d9e
+      created: 1753488185747
+      modified: 1753881623227
+      isPrivate: false
+      description: ""
+      sortKey: -1753487336519.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "recipe_id": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/users/logout/
+    name: UserLogout
+    meta:
+      id: req_efc626acfb4a431aa0fb46aa1b88c5a1
+      created: 1753489135494
+      modified: 1753867600121
+      isPrivate: false
+      description: ""
+      sortKey: -1748446561569.25
+    method: POST
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/favourites/remove/
+    name: RemoveFavourite
+    meta:
+      id: req_601a5fabe8384025867467547491e235
+      created: 1753489401235
+      modified: 1753881898457
+      isPrivate: false
+      description: ""
+      sortKey: -1753487745629.25
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "recipe_id": 3
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/ratings/rate/
+    name: RateRecipe
+    meta:
+      id: req_b8d73608352148db9bcdfcd5296e5288
+      created: 1753489903912
+      modified: 1753880000318
+      isPrivate: false
+      description: ""
+      sortKey: -1753486876271.0312
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "recipe_id": 11,
+          "rating": 5,
+          "comment": "Loved the spices!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/ratings/getByRecipe?recipe_id=17
+    name: GetRatingsByRecipeId
+    meta:
+      id: req_bbe1582a5b124efc9e84a2896678f71c
+      created: 1753489981074
+      modified: 1753880284587
+      isPrivate: false
+      description: ""
+      sortKey: -1753486901840.3906
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/getFull?id=1
+    name: GetRecipeById
+    meta:
+      id: req_11a68b614b79428b932019c2f30c740e
+      created: 1753490511084
+      modified: 1753867569766
+      isPrivate: false
+      description: ""
+      sortKey: -1753485940842.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/getMyRecipes
+    name: GetMyRecipes
+    meta:
+      id: req_1abbca2a8958481cbaad460d960a18ee
+      created: 1753869174819
+      modified: 1753869945691
+      isPrivate: false
+      description: ""
+      sortKey: -1753485541941.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/delete/
+    name: DeleteRecipeById
+    meta:
+      id: req_da865a5ec2244e91b221636b5c4e238a
+      created: 1753870592628
+      modified: 1753870916453
+      isPrivate: false
+      description: ""
+      sortKey: -1753486722854.875
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id": 27
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/create/
+    name: CreateRecipe
+    meta:
+      id: req_4226e87606da4fe98c4bf8a79c66d362
+      created: 1753876294996
+      modified: 1753877447314
+      isPrivate: false
+      description: ""
+      sortKey: -1753486825132.3125
+    method: POST
+    body:
+      mimeType: application/json
+      text: >
+        {
+          "title": "Avocado Toast",
+          "description": "Simple and quick breakfast option.",
+          "ingredients": [
+            { "name": "Bread", "quantity": 2, "unit": "slices" },
+            { "name": "Avocado", "quantity": 1, "unit": "ripe" },
+            { "name": "Lemon juice", "quantity": 1, "unit": "tsp" },
+            { "name": "Salt", "quantity": 1, "unit": "pinch" },
+            { "name": "Black pepper", "quantity": 1, "unit": "pinch" }
+          ],
+          "steps": [
+            { "step_number": 1, "instructions": "Toast the bread.", "step_time": 2 },
+            { "step_number": 2, "instructions": "Mash avocado with lemon juice.", "step_time": 3 },
+            { "step_number": 3, "instructions": "Spread on toast, season with salt and pepper.", "step_time": 2 }
+          ],
+          "categories": ["Breakfast", "Quick Meals"],
+          "total_time": 10
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost/api/recipes/update/
+    name: UpdateRecipe
+    meta:
+      id: req_62c120e14115488ba0eba68c7888b453
+      created: 1753877761570
+      modified: 1753878128847
+      isPrivate: false
+      description: ""
+      sortKey: -1753486773993.5938
+    method: PUT
+    body:
+      mimeType: application/json
+      text: >
+        {
+          "recipe_id": 6,
+          "title": "Updated2 Avocado Toast",
+          "description": "With chili flakes now",
+          "image_url": null,
+          "total_time": 15,
+          "steps": [
+            { "step_number": 1, "instructions": "Toast the bread", "step_time": 2 },
+            { "step_number": 2, "instructions": "Mash avocado with chili", "step_time": 4 }
+          ],
+          "ingredients": [
+            { "name": "Bread", "quantity": 2, "unit": "slices" },
+            { "name": "Avocado", "quantity": 1, "unit": "ripe" },
+            { "name": "Chili flakes", "quantity": 1, "unit": "tsp" }
+          ],
+          "categories": ["Breakfast", "Spicy"]
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.0.1
+    scripts:
+      preRequest: ""
+      afterResponse: ""
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_3994ec14f3814c2fafb26e92c40ea9f2
+    created: 1743407683136
+    modified: 1753487728073
+  cookies:
+    - id: 21cf19b6-40d3-4412-9283-142655d86cf1
+      key: session-id
+      value: 130-4384940-2634658
+      domain: amazon.com
+      path: /
+      secure: true
+      httpOnly: false
+      hostOnly: false
+    - id: c5ec6dbd-479f-4390-9dfe-daadb8b42855
+      key: session-id-time
+      value: 2082787201l
+      domain: amazon.com
+      path: /
+      secure: true
+      httpOnly: false
+      hostOnly: false
+    - id: 37cf5160-c4fc-4f0f-9fc7-7e301be035e7
+      key: ubid-main
+      value: 132-5919523-9115931
+      domain: amazon.com
+      path: /
+      secure: true
+      httpOnly: false
+      hostOnly: false
+    - id: cedaaa3e-4360-47fa-bec2-afdb05c8b9da
+      key: session-token
+      value: DHwozTK1sWUeXcDCimIcAgr3Qhba/dUUXMg3wIWGFLDTnu6ZmSMiaO+YXQiq4x9dtLCcrsoi/VdRXnQD8apzfMtg/CkoIK1DlTpfCLvTclYJT6ODAWRPArF5qGqYY2tKNzXcJY6kXU6SB4dsHDKZ0tP3I8pRpjQvOgL3H0s0WPgNQ/1B8BoQOCYDJMrmhDlRmTJaMfot9o5Z/P1sMA86Lw==
+      domain: amazon.com
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: false
+    - id: c08dd24e-9891-4df5-877a-d550f26688e2
+      key: PHPSESSID
+      value: lj60nuqsatubqh7ka65o2l0pn6
+      domain: localhost
+      path: /
+      secure: false
+      httpOnly: false
+      hostOnly: true
+environments:
+  name: Base Environment
+  meta:
+    id: env_e6c1f9fc4f684e67a0269e5aab591a5f
+    created: 1743407682938
+    modified: 1743407682938
+    isPrivate: false

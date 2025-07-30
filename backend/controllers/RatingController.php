@@ -14,9 +14,10 @@ class RatingController {
         $this->checkSession();
 
         $userId = $_SESSION['user_id'];
-        $recipeId = $_POST['recipe_id'] ?? null;
-        $rating = $_POST['rating'] ?? null;
-        $comment = $_POST['comment'] ?? null;
+        $input = json_decode(file_get_contents("php://input"), true);
+        $recipeId = $input['recipe_id'] ?? null;
+        $rating = $input['rating'] ?? null;
+        $comment = $input['comment'] ?? null;
 
         if (!is_numeric($recipeId) || !is_numeric($rating)) {
             http_response_code(400);

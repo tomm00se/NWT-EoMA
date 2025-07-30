@@ -9,14 +9,26 @@ class FavouriteService {
     }
 
     public function addFavourite($userId, $recipeId) {
-        return $this->model->addFavourite($userId, $recipeId);
+    if (!$this->model->recipeExists($recipeId)) {
+        throw new Exception("Recipe does not exist.");
     }
+    return $this->model->addFavourite($userId, $recipeId);
+}
 
     public function removeFavourite($userId, $recipeId) {
+        
+        $stmt = (new Config())->getPDO()->prepare("SELECT 1 FROM recipes WHERE recipe_id = ?");
+        $stmt->execute([$recipeId]);
+
+        if (!$stmt->fetch()) {
+            throw new Exception("Recipe does not exist.");
+        }
+
         return $this->model->removeFavourite($userId, $recipeId);
     }
 
     public function getFavouritesByUser($userId) {
         return $this->model->getFavouritesByUser($userId);
     }
+
 }

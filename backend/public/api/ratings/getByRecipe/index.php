@@ -1,17 +1,17 @@
 <?php
-session_start();
 require_once __DIR__ . '/../../../../controllers/RatingController.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: /login.php');
-    exit;
-}
+$controller = new RatingController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $controller = new RatingController();
-    $controller->getRecipeRating($_GET['recipe_id'] ?? null);
+    $recipeId = $_GET['recipe_id'] ?? null;
+    if ($recipeId) {
+        $controller->getRecipeRating((int)$recipeId);
+    } else {
+        http_response_code(400);
+        echo json_encode(["error" => "Recipe ID is required."]);
+    }
 } else {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed.']);
+    echo json_encode(["error" => "Method Not Allowed"]);
 }
-?>

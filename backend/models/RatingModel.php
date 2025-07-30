@@ -29,6 +29,11 @@ class RatingModel {
             'comments' => $comments
         ];
     }
+    public function recipeExists(int $recipeId): bool {
+    $stmt = $this->db->prepare("SELECT 1 FROM recipes WHERE recipe_id = ?");
+    $stmt->execute([$recipeId]);
+    return (bool) $stmt->fetch();
+}
 
 
 }

@@ -23,7 +23,7 @@ class RecipeModel {
     }
 
     public function fetchRecipesByUser(int $userId): array {
-        $stmt = $this->db->prepare("SELECT * FROM recipes WHERE user_id = ?");
+        $stmt = $this->db->prepare("SELECT * FROM recipes WHERE author_id = ?");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -58,10 +58,10 @@ class RecipeModel {
     }
 
     public function getRecipeOwnerId(int $recipeId): ?int {
-        $stmt = $this->db->prepare("SELECT user_id FROM recipes WHERE recipe_id = ?");
+        $stmt = $this->db->prepare("SELECT author_id FROM recipes WHERE recipe_id = ?");
         $stmt->execute([$recipeId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? (int)$row['user_id'] : null;
+        return $row ? (int)$row['author_id'] : null;
     }
 
 
@@ -70,7 +70,7 @@ class RecipeModel {
 
     try {
         // Insert recipe
-        $stmt = $this->db->prepare("INSERT INTO recipes (title, description, image_url, total_time, created_at, user_id)
+        $stmt = $this->db->prepare("INSERT INTO recipes (title, description, image_url, total_time, created_at, author_id)
                                     VALUES (?, ?, ?, ?, NOW(), ?)");
         $stmt->execute([
             $data['title'],
@@ -137,9 +137,11 @@ public function updateRecipe(int $id, array $data, int $userId) {
     $this->db->beginTransaction();
 
     try {
+
+        echo $userId;
         // Update recipe info
         $stmt = $this->db->prepare("UPDATE recipes SET title = ?, description = ?, image_url = ?, total_time = ?
-                                    WHERE recipe_id = ? AND user_id = ?");
+                                    WHERE recipe_id = ? AND author_id = ?");
         $stmt->execute([
             $data['title'],
             $data['description'],
@@ -172,7 +174,7 @@ public function updateRecipe(int $id, array $data, int $userId) {
 
 
 public function deleteRecipe(int $id, int $userId) {
-    $stmt = $this->db->prepare("DELETE FROM recipes WHERE recipe_id = ? AND user_id = ?");
+    $stmt = $this->db->prepare("DELETE FROM recipes WHERE recipe_id = ? AND author_id = ?");
     $stmt->execute([$id, $userId]);
 
     if ($stmt->rowCount() === 0) {

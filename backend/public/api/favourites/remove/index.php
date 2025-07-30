@@ -1,17 +1,14 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../../../../controllers/FavouriteController.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: /login.php');
-    exit;
-}
+$favController = new FavouriteController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new FavouriteController();
-    $controller->removeFavourite();
+    $favController->removeFavourite();
 } else {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed.']);
+    echo json_encode(["message" => "Method Not Allowed"]);
 }
-?>

@@ -1,18 +1,26 @@
 <?php
 require_once __DIR__ . '/../../../../controllers/RecipeController.php';
 
-$controller = new RecipeController();
+$recipeController = new RecipeController();
 
-parse_str($_SERVER['QUERY_STRING'], $params);
-$id = $params['id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-if ($_SERVER['REQUEST_METHOD'] === 'PUT' && is_numeric($id)) {
-    $controller->updateRecipe($id);
+    // Get the JSON payload
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    if (!isset($data['recipe_id']) || !is_numeric($data['recipe_id'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Recipe ID is required and must be numeric in the request body."]);
+        exit;
+    }
+
+    $recipeId = (int) $data['recipe_id'];
+    $recipeController->updateRecipe($recipeId);
+    
 } else {
-    sendResponse405();
-}
-
-function sendResponse405() {
     http_response_code(405);
-    echo json_encode(["message" => "Method Not Allowed or missing ID"]);
+    echo json_encode(["error" => "Method Not Allowed"]);
 }

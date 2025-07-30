@@ -8,14 +8,16 @@ require_once __DIR__ . '/../../../../controllers/UserController.php';
 $userController = new UserController();
 
 $requestUri = rtrim($_SERVER['REQUEST_URI'], '/');
+
 echo $requestUri;
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $userController->login();
     
 } else {
-    // Optionally, render forms or return a message for GET requests
+
     echo json_encode(["message" => "Please use the registration or login form."]);
 }
 

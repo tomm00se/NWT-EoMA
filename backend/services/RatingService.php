@@ -20,10 +20,17 @@ class RatingService {
             }
         }
 
+       
+        if (!$this->model->recipeExists($recipeId)) {
+            throw new Exception("Cannot rate a non-existing recipe.");
+        }
+
         return $this->model->rateRecipe($userId, $recipeId, $rating, $comment);
     }
 
     public function getRecipeRating(int $recipeId): array {
         return $this->model->getRecipeRating($recipeId);
     }
+
+
 }

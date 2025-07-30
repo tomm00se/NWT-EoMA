@@ -19,6 +19,7 @@ const sampleRecipes = [
         description: "Classic Italian pasta dish with rich meat sauce, slow-cooked with aromatic herbs and vegetables for the perfect comfort meal.",
         time: "45 min",
         rating: "4.8",
+        ratingCount: 156,
         icon: "🍝",
         tags: ["main", "italian", "meat"],
         servings: "4 people",
@@ -55,6 +56,7 @@ const sampleRecipes = [
         description: "Fluffy American-style pancakes made entirely plant-based with simple ingredients that everyone will love.",
         time: "20 min",
         rating: "4.6",
+        ratingCount: 156,
         icon: "🥞",
         tags: ["breakfast", "vegan", "vegetarian", "quick"],
         servings: "3 people",
@@ -87,6 +89,7 @@ const sampleRecipes = [
         description: "Nutritious pizza with whole wheat base, fresh vegetables, and light cheese for a guilt-free indulgence.",
         time: "35 min",
         rating: "4.7",
+        ratingCount: 156,
         icon: "🍕",
         tags: ["main", "healthy", "vegetarian"],
         servings: "2 people",
@@ -122,6 +125,7 @@ const sampleRecipes = [
         description: "Aromatic Indian rice dish with tender lamb and exotic spices, layered and slow-cooked to perfection.",
         time: "60 min",
         rating: "4.9",
+        ratingCount: 156,
         icon: "🍛",
         tags: ["main", "indian", "meat"],
         servings: "6 people",
@@ -160,6 +164,7 @@ const sampleRecipes = [
         description: "Fresh Mediterranean salad with fluffy couscous, dried fruits, nuts, and a zesty lemon dressing.",
         time: "15 min",
         rating: "4.5",
+        ratingCount: 156,
         icon: "🥗",
         tags: ["salad", "healthy", "vegetarian", "quick"],
         servings: "4 people",
@@ -195,6 +200,7 @@ const sampleRecipes = [
         description: "Traditional French baked dessert with sweet juicy plums in a custard-like batter, perfect with vanilla ice cream.",
         time: "50 min",
         rating: "4.4",
+        ratingCount: 156,
         icon: "🍰",
         tags: ["dessert", "french", "vegetarian"],
         servings: "6 people",
@@ -255,6 +261,42 @@ function createModalHTML() {
                 <div class="modal-body">
                     <div class="modal-section">
                         <p class="modal-description" id="modalDescription">Recipe description will appear here.</p>
+                    </div>
+                    
+                    <!-- Rating Section -->
+                    <div class="rating-section" id="ratingSection">
+                        <div class="rating-header">
+                            <h3 class="rating-title">Rate This Recipe</h3>
+                            <div class="current-rating">
+                                <span class="rating-stars-display" id="currentRatingStars">★★★★☆</span>
+                                <span id="currentRatingText">(4.8 from 156 ratings)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="interactive-rating" id="interactiveRating">
+                            <p class="rating-prompt">How would you rate this recipe?</p>
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-feedback" id="ratingFeedback"></div>
+                            
+                            <div class="rating-submit-section" id="ratingSubmitSection">
+                                <button class="rating-btn btn-submit-rating" id="submitRatingBtn" disabled>
+                                    Submit Rating
+                                </button>
+                                <button class="rating-btn btn-cancel-rating" id="cancelRatingBtn">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="rating-success" id="ratingSuccess">
+                            <p>✨ Thank you! Your rating has been submitted.</p>
+                        </div>
                     </div>
                     
                     <div class="modal-section">
@@ -603,6 +645,9 @@ function openRecipeModal(recipeId) {
 }
 
 function closeRecipeModal() {
+    // Clean up rating event listeners when modal closes
+    cleanupRatingEventListeners();
+    
     const modal = document.getElementById('recipeModal');
     const body = document.body;
     
@@ -738,10 +783,334 @@ function populateModalContent(recipe) {
         }
         
         console.log('Modal content populated successfully for:', recipe.title);
+
+        // Initialize rating system for this recipe
+        initializeRatingSystem(recipe);
         
     } catch (error) {
         console.error('Error populating modal content:', error);
         // Show error message to user
         document.getElementById('modalDescription').textContent = 'Sorry, there was an error loading the recipe details. Please try again.';
+    }
+}
+
+// Rating System Functionality
+let currentUserRating = 0;
+let isRatingSubmitted = false;
+
+// Clean up rating event listeners to prevent accumulation
+function cleanupRatingEventListeners() {
+    const modal = document.getElementById('recipeModal');
+    
+    // Remove existing star event listeners if they exist
+    if (modal._currentRatingHandlers) {
+        modal._currentRatingHandlers.forEach(handlerInfo => {
+            handlerInfo.events.forEach(eventInfo => {
+                handlerInfo.element.removeEventListener(eventInfo.type, eventInfo.handler);
+            });
+        });
+        modal._currentRatingHandlers = null;
+    }
+    
+    // Clear any lingering rating states
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.classList.remove('hovered', 'selected');
+    });
+    
+    console.log('Rating event listeners cleaned up');
+}
+
+// Initialize rating system when modal opens
+function initializeRatingSystem(recipe) {
+    // Clean up any existing event listeners first
+    cleanupRatingEventListeners();
+    
+    const stars = document.querySelectorAll('.star');
+    const ratingFeedback = document.getElementById('ratingFeedback');
+    const submitBtn = document.getElementById('submitRatingBtn');
+    const cancelBtn = document.getElementById('cancelRatingBtn');
+    const submitSection = document.getElementById('ratingSubmitSection');
+    const ratingSuccess = document.getElementById('ratingSuccess');
+    const interactiveRating = document.getElementById('interactiveRating');
+    
+    // Reset rating state for THIS specific recipe
+    currentUserRating = 0;
+    isRatingSubmitted = false;
+    ratingSuccess.classList.remove('show');
+    interactiveRating.style.display = 'block';
+    submitBtn.disabled = true;
+    submitSection.classList.remove('show');
+    ratingFeedback.classList.remove('show');
+    
+    // Clear any existing star states
+    stars.forEach(star => {
+        star.classList.remove('hovered', 'selected');
+    });
+    
+    // Check if user has already rated THIS specific recipe
+    // TODO: Change from localStorage and integrate with backend
+    const existingRating = localStorage.getItem(`rating_${recipe.id}`);
+    console.log(`Checking existing rating for recipe ${recipe.id}:`, existingRating);
+    
+    if (existingRating) {
+        showRatingSubmitted(parseInt(existingRating));
+        return;
+    }
+    
+    // Create new event handlers with proper closure for current recipe
+    const starEventHandlers = [];
+    
+    // Add event listeners to stars with proper cleanup tracking
+    stars.forEach((star, index) => {
+        const starIndex = index;
+        
+        // Mouse enter handler
+        const mouseEnterHandler = () => {
+            highlightStars(starIndex + 1);
+            showRatingFeedback(starIndex + 1);
+        };
+        
+        // Mouse leave handler  
+        const mouseLeaveHandler = () => {
+            if (currentUserRating === 0) {
+                clearStarHighlight();
+                ratingFeedback.classList.remove('show');
+            } else {
+                highlightStars(currentUserRating);
+                showRatingFeedback(currentUserRating);
+            }
+        };
+        
+        // Click handler
+        const clickHandler = () => {
+            currentUserRating = starIndex + 1;
+            selectStars(currentUserRating);
+            showRatingFeedback(currentUserRating);
+            enableSubmitButton();
+            console.log(`Selected rating ${currentUserRating} for recipe ${recipe.id}`);
+        };
+        
+        // Add event listeners
+        star.addEventListener('mouseenter', mouseEnterHandler);
+        star.addEventListener('mouseleave', mouseLeaveHandler);
+        star.addEventListener('click', clickHandler);
+        
+        // Store handlers for cleanup
+        starEventHandlers.push({
+            element: star,
+            events: [
+                { type: 'mouseenter', handler: mouseEnterHandler },
+                { type: 'mouseleave', handler: mouseLeaveHandler },
+                { type: 'click', handler: clickHandler }
+            ]
+        });
+    });
+    
+    // Store event handlers for cleanup (attach to the modal for current recipe)
+    const modal = document.getElementById('recipeModal');
+    modal._currentRatingHandlers = starEventHandlers;
+    
+    // Submit button event - create new handler each time
+    const submitHandler = () => {
+        if (currentUserRating > 0) {
+            console.log(`Submitting rating ${currentUserRating} for recipe ${recipe.id}`);
+            submitRating(recipe.id, currentUserRating);
+        }
+    };
+    
+    // Cancel button event - create new handler each time
+    const cancelHandler = () => {
+        resetRating();
+    };
+    
+    // Remove existing button event listeners if any
+    const newSubmitBtn = submitBtn.cloneNode(true);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+    
+    // Add new event listeners to the new button elements
+    newSubmitBtn.addEventListener('click', submitHandler);
+    newCancelBtn.addEventListener('click', cancelHandler);
+    
+    console.log(`Rating system initialized for recipe: ${recipe.title} (ID: ${recipe.id})`);
+}
+
+// Highlight stars up to the given rating
+function highlightStars(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.add('hovered');
+        } else {
+            star.classList.remove('hovered');
+        }
+        star.classList.remove('selected');
+    });
+}
+
+// Select stars (when clicked)
+function selectStars(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        star.classList.remove('hovered');
+        if (index < rating) {
+            star.classList.add('selected');
+        } else {
+            star.classList.remove('selected');
+        }
+    });
+}
+
+// Clear star highlight
+function clearStarHighlight() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.classList.remove('hovered', 'selected');
+    });
+}
+
+// Show rating feedback text
+function showRatingFeedback(rating) {
+    const ratingFeedback = document.getElementById('ratingFeedback');
+    const feedbackTexts = {
+        1: "Poor - Hmm...",
+        2: "Fair - It's okay",
+        3: "Good - I liked it",
+        4: "Very Good - Really enjoyed it",
+        5: "Excellent - Outstanding recipe!"
+    };
+    
+    ratingFeedback.textContent = feedbackTexts[rating];
+    ratingFeedback.className = `rating-feedback rating-text rating-${rating} show`;
+}
+
+// Enable submit button
+function enableSubmitButton() {
+    const submitBtn = document.getElementById('submitRatingBtn');
+    const submitSection = document.getElementById('ratingSubmitSection');
+    
+    submitBtn.disabled = false;
+    submitSection.classList.add('show');
+}
+
+// Reset rating to initial state
+function resetRating() {
+    currentUserRating = 0;
+    clearStarHighlight();
+    const ratingFeedback = document.getElementById('ratingFeedback');
+    const submitSection = document.getElementById('ratingSubmitSection');
+    
+    ratingFeedback.classList.remove('show');
+    submitSection.classList.remove('show');
+    
+    document.getElementById('submitRatingBtn').disabled = true;
+}
+
+// Submit rating (save to localStorage for now)
+// TODO: Integrate with backend
+function submitRating(recipeId, rating) {
+    console.log(`Attempting to submit rating ${rating} for recipe ${recipeId}`);
+    
+    try {
+        // Save to localStorage with recipe-specific key
+        const ratingKey = `rating_${recipeId}`;
+        localStorage.setItem(ratingKey, rating.toString());
+        
+        // Verify the save worked
+        const savedRating = localStorage.getItem(ratingKey);
+        console.log(`Rating saved successfully. Key: ${ratingKey}, Value: ${savedRating}`);
+        
+        // Update recipe rating in memory
+        const recipe = sampleRecipes.find(r => r.id === recipeId);
+        if (recipe) {
+            updateRecipeRating(recipe, rating);
+            console.log(`Updated recipe ${recipe.title} with new rating`);
+        } else {
+            console.error(`Recipe with ID ${recipeId} not found in sampleRecipes`);
+        }
+        
+        // Show success message
+        showRatingSubmitted(rating);
+        
+        // Update recipe card in the background
+        updateRecipeCardRating(recipeId);
+        
+        console.log(`Rating submission completed for recipe ${recipeId}`);
+        
+    } catch (error) {
+        console.error('Error submitting rating:', error);
+        alert('Sorry, there was an error saving your rating. Please try again.');
+    }
+}
+
+// Show rating submitted state
+function showRatingSubmitted(rating) {
+    const interactiveRating = document.getElementById('interactiveRating');
+    const ratingSuccess = document.getElementById('ratingSuccess');
+    
+    interactiveRating.style.display = 'none';
+    ratingSuccess.innerHTML = `
+        <p>✨ You rated this recipe ${rating} star${rating !== 1 ? 's' : ''}!</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">
+            Thank you for your feedback!
+        </p>
+    `;
+    ratingSuccess.classList.add('show');
+    
+    isRatingSubmitted = true;
+}
+
+// Update recipe rating calculation
+// TODO: Currently simplified for placeholder value but to be
+// amended in FULL with backend integration
+function updateRecipeRating(recipe, newRating) {
+    // Simple rating update
+    const currentRating = parseFloat(recipe.rating);
+    const ratingCount = parseInt(localStorage.getItem(`rating_count_${recipe.id}`) || '156');
+    
+    // Calculate new average (simplified)
+    const newAverage = ((currentRating * ratingCount) + newRating) / (ratingCount + 1);
+    recipe.rating = newAverage.toFixed(1);
+    
+    // Update count
+    localStorage.setItem(`rating_count_${recipe.id}`, (ratingCount + 1).toString());
+    
+    // Update current rating display
+    updateCurrentRatingDisplay(recipe);
+}
+
+// Update current rating display in modal
+function updateCurrentRatingDisplay(recipe) {
+    const ratingCount = parseInt(localStorage.getItem(`rating_count_${recipe.id}`) || '156');
+    const starsDisplay = document.getElementById('currentRatingStars');
+    const ratingText = document.getElementById('currentRatingText');
+    
+    // Generate star display
+    const rating = parseFloat(recipe.rating);
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    
+    let starsHTML = '★'.repeat(fullStars);
+    if (hasHalfStar) starsHTML += '☆';
+    starsHTML += '☆'.repeat(5 - fullStars - (hasHalfStar ? 1 : 0));
+    
+    starsDisplay.textContent = starsHTML;
+    ratingText.textContent = `(${recipe.rating} from ${ratingCount + 1} ratings)`;
+}
+
+// Update recipe card rating in the grid
+function updateRecipeCardRating(recipeId) {
+    const recipe = sampleRecipes.find(r => r.id === recipeId);
+    if (recipe) {
+        // Find the recipe card in the DOM and update its rating
+        const recipeCard = document.querySelector(`[data-recipe-id="${recipeId}"]`);
+        if (recipeCard) {
+            const ratingElement = recipeCard.querySelector('.recipe-rating');
+            if (ratingElement) {
+                ratingElement.textContent = `★ ${recipe.rating}`;
+            }
+        }
     }
 }

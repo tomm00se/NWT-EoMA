@@ -262,7 +262,46 @@ function createModalHTML() {
                     <div class="modal-section">
                         <p class="modal-description" id="modalDescription">Recipe description will appear here.</p>
                     </div>
+
+                    <!-- Favorites Section -->
+                    <div class="favorites-section" id="favoritesSection">
+                        <div class="favorites-header">
+                            <h3 class="favorites-title">Save This Recipe</h3>
+                        </div>
+                        
+                        <button class="favorite-btn btn-add-favorite" id="addFavoriteBtn">
+                            <span class="favorite-icon">❤️</span>
+                            <span>Add to Favorites</span>
+                        </button>
+                        
+                        <button class="favorite-btn btn-remove-favorite" id="removeFavoriteBtn" style="display: none;">
+                            <span class="favorite-icon">💔</span>
+                            <span>Remove from Favorites</span>
+                        </button>
+                        
+                        <div class="favorite-success" id="favoriteSuccess">
+                            <p>✨ Recipe added to your favorites!</p>
+                        </div>
+                        
+                        <div class="favorite-removed" id="favoriteRemoved">
+                            <p>🗑️ Recipe removed from your favorites.</p>
+                        </div>
+                    </div>
                     
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Ingredients</h3>
+                        <ul class="ingredients-list" id="modalIngredients">
+                            <!-- Ingredients will be populated dynamically -->
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Instructions</h3>
+                        <ol class="instructions-list" id="modalInstructions">
+                            <!-- Instructions will be populated dynamically -->
+                        </ol>
+                    </div>
+
                     <!-- Rating Section -->
                     <div class="rating-section" id="ratingSection">
                         <div class="rating-header">
@@ -297,20 +336,6 @@ function createModalHTML() {
                         <div class="rating-success" id="ratingSuccess">
                             <p>✨ Thank you! Your rating has been submitted.</p>
                         </div>
-                    </div>
-                    
-                    <div class="modal-section">
-                        <h3 class="modal-section-title">Ingredients</h3>
-                        <ul class="ingredients-list" id="modalIngredients">
-                            <!-- Ingredients will be populated dynamically -->
-                        </ul>
-                    </div>
-                    
-                    <div class="modal-section">
-                        <h3 class="modal-section-title">Instructions</h3>
-                        <ol class="instructions-list" id="modalInstructions">
-                            <!-- Instructions will be populated dynamically -->
-                        </ol>
                     </div>
                     
                     <div class="modal-tags" id="modalTags">
@@ -475,6 +500,12 @@ filterBtns.forEach(btn => {
         
         if (filterValue === 'all') {
             filteredRecipes = sampleRecipes;
+        } else if (filterValue === 'favorites') {
+            // Handle favorites filter
+            displayFavorites();
+            const sectionTitle = document.querySelector('#recipes .section-title');
+            sectionTitle.textContent = 'My Favorite Recipes';
+            return; // Exit early for favorites
         } else {
             filteredRecipes = sampleRecipes.filter(recipe => {
                 switch (filterValue) {
@@ -507,10 +538,14 @@ filterBtns.forEach(btn => {
 
 // Recipe card creation
 function createRecipeCard(recipe) {
+    const isFavorite = isFavoriteRecipe(recipe.id);
+
     return `
-        <div class="recipe-card" data-recipe-id="${recipe.id}"
-        style="cursor: pointer;" title="Click to view recipe details">
+        <div class="recipe-card ${isFavorite ? 'is-favorite' : ''}" data-recipe-id="${recipe.id}" style="cursor: pointer;" title="Click to view recipe details">
             <div class="recipe-image">${recipe.icon}</div>
+            <div class="recipe-favorite-indicator" title="${isFavorite ? 'This is one of your favorites!' : 'Add to favorites'}">
+                ❤️
+            </div>
             <div class="recipe-info">
                 <div class="recipe-category">${recipe.category}</div>
                 <h3 class="recipe-title">${recipe.title}</h3>
@@ -786,6 +821,9 @@ function populateModalContent(recipe) {
 
         // Initialize rating system for this recipe
         initializeRatingSystem(recipe);
+
+        // Initialize favorites system for this recipe
+        initializeFavoritesSystem(recipe);
         
     } catch (error) {
         console.error('Error populating modal content:', error);
@@ -1114,3 +1152,213 @@ function updateRecipeCardRating(recipeId) {
         }
     }
 }
+
+// Favorites System Functionality
+// TODO: Replace localStorage with backend integration
+let userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || [];
+
+// Check if a recipe is in favorites
+function isFavoriteRecipe(recipeId) {
+    return userFavorites.includes(parseInt(recipeId));
+}
+
+// Add recipe to favorites
+function addToFavorites(recipeId) {
+    const id = parseInt(recipeId);
+    if (!userFavorites.includes(id)) {
+        userFavorites.push(id);
+        saveFavoritesToStorage();
+        updateFavoritesDisplay();
+        showFavoriteSuccess('added');
+        updateRecipeCardFavoriteStatus(id, true);
+        console.log(`Recipe ${recipeId} added to favorites`);
+        return true;
+    }
+    return false;
+}
+
+// Remove recipe from favorites
+function removeFromFavorites(recipeId) {
+    const id = parseInt(recipeId);
+    const index = userFavorites.indexOf(id);
+    if (index > -1) {
+        userFavorites.splice(index, 1);
+        saveFavoritesToStorage();
+        updateFavoritesDisplay();
+        showFavoriteSuccess('removed');
+        updateRecipeCardFavoriteStatus(id, false);
+        console.log(`Recipe ${recipeId} removed from favorites`);
+        return true;
+    }
+    return false;
+}
+
+// Save favorites to localStorage
+// TODO: Replace localStorage with backend integration
+function saveFavoritesToStorage() {
+    localStorage.setItem('userFavorites', JSON.stringify(userFavorites));
+}
+
+// Initialize favorites system when modal opens
+function initializeFavoritesSystem(recipe) {
+    const addBtn = document.getElementById('addFavoriteBtn');
+    const removeBtn = document.getElementById('removeFavoriteBtn');
+    const favoriteSuccess = document.getElementById('favoriteSuccess');
+    const favoriteRemoved = document.getElementById('favoriteRemoved');
+    
+    // Reset UI state
+    favoriteSuccess.classList.remove('show');
+    favoriteRemoved.classList.remove('show');
+    
+    // Check if recipe is already in favorites
+    const isFavorite = isFavoriteRecipe(recipe.id);
+    
+    if (isFavorite) {
+        addBtn.style.display = 'none';
+        removeBtn.style.display = 'flex';
+    } else {
+        addBtn.style.display = 'flex';
+        removeBtn.style.display = 'none';
+    }
+    
+    // Remove existing event listeners by cloning buttons
+    const newAddBtn = addBtn.cloneNode(true);
+    const newRemoveBtn = removeBtn.cloneNode(true);
+    addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+    removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+    
+    // Add event listeners
+    newAddBtn.addEventListener('click', () => {
+        if (addToFavorites(recipe.id)) {
+            newAddBtn.style.display = 'none';
+            newRemoveBtn.style.display = 'flex';
+        }
+    });
+    
+    newRemoveBtn.addEventListener('click', () => {
+        if (removeFromFavorites(recipe.id)) {
+            newRemoveBtn.style.display = 'none';
+            newAddBtn.style.display = 'flex';
+        }
+    });
+    
+    console.log(`Favorites system initialized for recipe: ${recipe.title} (Favorite: ${isFavorite})`);
+}
+
+// Show favorite success/removed message
+function showFavoriteSuccess(action) {
+    const favoriteSuccess = document.getElementById('favoriteSuccess');
+    const favoriteRemoved = document.getElementById('favoriteRemoved');
+    
+    // Hide both first
+    favoriteSuccess.classList.remove('show');
+    favoriteRemoved.classList.remove('show');
+    
+    if (action === 'added') {
+        setTimeout(() => {
+            favoriteSuccess.classList.add('show');
+            setTimeout(() => favoriteSuccess.classList.remove('show'), 3000);
+        }, 100);
+    } else if (action === 'removed') {
+        setTimeout(() => {
+            favoriteRemoved.classList.add('show');
+            setTimeout(() => favoriteRemoved.classList.remove('show'), 3000);
+        }, 100);
+    }
+}
+
+// Update favorites display throughout the app
+function updateFavoritesDisplay() {
+    updateFavoritesCount();
+    updateAllRecipeCards();
+}
+
+// Update favorites count in filter button
+function updateFavoritesCount() {
+    const favoritesCount = document.getElementById('favoritesCount');
+    const count = userFavorites.length;
+    
+    if (favoritesCount) {
+        favoritesCount.textContent = count;
+        if (count > 0) {
+            favoritesCount.classList.add('show');
+        } else {
+            favoritesCount.classList.remove('show');
+        }
+    }
+}
+
+// Update recipe card favorite status
+function updateRecipeCardFavoriteStatus(recipeId, isFavorite) {
+    const recipeCard = document.querySelector(`[data-recipe-id="${recipeId}"]`);
+    if (recipeCard) {
+        if (isFavorite) {
+            recipeCard.classList.add('is-favorite');
+        } else {
+            recipeCard.classList.remove('is-favorite');
+        }
+    }
+}
+
+// Update all recipe cards favorite status
+function updateAllRecipeCards() {
+    const recipeCards = document.querySelectorAll('.recipe-card');
+    recipeCards.forEach(card => {
+        const recipeId = parseInt(card.getAttribute('data-recipe-id'));
+        const isFavorite = isFavoriteRecipe(recipeId);
+        updateRecipeCardFavoriteStatus(recipeId, isFavorite);
+    });
+}
+
+// Get user's favorite recipes
+function getFavoriteRecipes() {
+    return sampleRecipes.filter(recipe => userFavorites.includes(recipe.id));
+}
+
+// Display favorites (empty or recipes)
+function displayFavorites() {
+    const favoriteRecipes = getFavoriteRecipes();
+    
+    if (favoriteRecipes.length === 0) {
+        recipesGrid.innerHTML = `
+            <div class="empty-favorites">
+                <div class="empty-favorites-icon">💔</div>
+                <h3 class="empty-favorites-title">No Favorites Yet</h3>
+                <p class="empty-favorites-description">
+                    Start exploring recipes and click the heart icon to save your favorites here!
+                </p>
+                <button class="btn btn-primary" onclick="showAllRecipes()">
+                    Explore Recipes
+                </button>
+            </div>
+        `;
+    } else {
+        displayRecipes(favoriteRecipes);
+    }
+}
+
+// Show all recipes (helper function)
+function showAllRecipes() {
+    displayRecipes(sampleRecipes);
+    
+    // Update section title
+    const sectionTitle = document.querySelector('#recipes .section-title');
+    sectionTitle.textContent = 'Featured Recipes';
+    
+    // Update active filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[data-search-filter="all"]').classList.add('active');
+}
+
+// Initialize favorites system on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Load favorites from localStorage
+    // TODO: Replace localStorage with backend integration
+    userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || [];
+    
+    // Update initial display
+    updateFavoritesDisplay();
+    
+    console.log('Favorites system initialized with', userFavorites.length, 'favorites');
+});

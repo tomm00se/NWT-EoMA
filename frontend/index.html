@@ -1,162 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipe Hub - Discover Simp-mazing Recipes</title>
-    <link rel="stylesheet" href="./css/index.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
     <!-- Navigation Header -->
     <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <h1 class="brand-title">
-                  <a href="#home">Recipe Hub</a>
-                </h1>
-            </div>
-            <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#recipes" class="nav-link">Recipes</a>
-                <a href="#search" class="nav-link">Search</a>
-                <a href="signin.html" class="nav-link signin-link">Sign In</a>
-            </div>
-            <div class="nav-toggle" id="navToggle">
-                <span class="toggle-bar"></span>
-                <span class="toggle-bar"></span>
-                <span class="toggle-bar"></span>
-            </div>
+      <div class="nav-container">
+        <div class="nav-brand">
+          <h1 class="brand-title">
+            <a href="#home">Recipe Hub</a>
+          </h1>
         </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="#home" class="nav-link">Home</a>
+          <a href="#recipes" class="nav-link">Recipes</a>
+          <a href="#search" class="nav-link">Search</a>
+          <a href="signin.html" class="nav-link signin-link">Sign In</a>
+        </div>
+        <div class="nav-toggle" id="navToggle">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </div>
+      </div>
     </nav>
+
+    <!-- Sign Out Modal -->
+    <div class="modal-overlay" id="signOutModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Sign Out</div>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-message">Are you sure you want to sign out?</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" id="cancelSignOut">Cancel</button>
+            <button class="btn btn-primary" id="confirmSignOut">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Discover Your Next <span class="accent-text">Favorite Recipe</span></h1>
-                <p class="hero-description">
-                    Explore thousands of delicious recipes from professional chefs. 
-                    Find, save, and rate recipes that match your taste and dietary preferences.
-                </p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" id="exploreBtn">Explore Recipes</button>
-                    <a href="signin.html" class="btn btn-secondary">Join Now</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="recipe-preview-card">
-                    <div class="preview-header">
-                        <span class="preview-category">Featured Recipe</span>
-                        <span class="preview-rating">★ 4.8</span>
-                    </div>
-                    <h3 class="preview-title">Spaghetti Bolognese</h3>
-                    <p class="preview-time">⏱️ 45 min</p>
-                </div>
-            </div>
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            Discover Your Next <span class="accent-text">Favorite Recipe</span>
+          </h1>
+          <p class="hero-description">
+            Explore thousands of delicious recipes from professional chefs.
+            Find, save, and rate recipes that match your taste and dietary
+            preferences.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="exploreBtn">
+              Explore Recipes
+            </button>
+            <a href="signin.html" class="btn btn-secondary">Join Now</a>
+          </div>
         </div>
+        <div class="hero-image">
+          <div class="recipe-preview-card">
+            <div class="preview-header">
+              <span class="preview-category">Featured Recipe</span>
+              <span class="preview-rating">★ 4.8</span>
+            </div>
+            <h3 class="preview-title">Spaghetti Bolognese</h3>
+            <p class="preview-time">⏱️ 45 min</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Search Preview Section -->
     <section class="search-preview" id="search">
-        <div class="container">
-            <h2 class="section-title">Find Your Perfect Recipe</h2>
-            <div class="search-container">
-                <div class="search-bar">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search for recipes, ingredients, or cuisines...">
-                    <button class="search-btn" id="searchBtn">Search</button>
-                </div>
-                <div class="search-filters">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="vegetarian">Vegetarian</button>
-                    <button class="filter-btn" data-filter="quick">Quick Meals</button>
-                    <button class="filter-btn" data-filter="healthy">Healthy</button>
-                    <button class="filter-btn" data-filter="dessert">Desserts</button>
-                </div>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Find Your Perfect Recipe</h2>
+        <div class="search-container">
+          <div class="search-bar">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search for recipes, ingredients, or cuisines..."
+            />
+            <button class="search-btn" id="searchBtn">Search</button>
+          </div>
+          <div class="search-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="main">Main</button>
+            <button class="filter-btn" data-filter="vegetarian">
+              Vegetarian
+            </button>
+            <button class="filter-btn" data-filter="vegan">Vegan</button>
+            <button class="filter-btn" data-filter="dessert">Desserts</button>
+            <button class="filter-btn" data-filter="breakfast">
+              Breakfast
+            </button>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Featured Recipes Section -->
     <section class="featured-recipes" id="recipes">
-        <div class="container">
-            <h2 class="section-title">Featured Recipes</h2>
-            <div class="recipes-grid" id="recipesGrid">
-                <!-- Recipe cards will be populated by JavaScript -->
-            </div>
-            <div class="load-more-container">
-                <button class="btn btn-outline" id="loadMoreBtn">View All Recipes</button>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Featured Recipes</h2>
+        <div class="recipes-grid" id="recipesGrid">
+          <!-- Recipe cards will be populated by JavaScript -->
         </div>
+        <div class="load-more-container">
+          <button class="btn btn-outline" id="loadMoreBtn">
+            View All Recipes
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- Features Section -->
     <section class="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose Recipe Hub?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3 class="feature-title">Smart Search</h3>
-                    <p class="feature-description">Find recipes by ingredients, dietary restrictions, cooking time, and more.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⭐</div>
-                    <h3 class="feature-title">Community Ratings</h3>
-                    <p class="feature-description">Rate and review recipes to help others discover the best dishes.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💾</div>
-                    <h3 class="feature-title">Save Favorites</h3>
-                    <p class="feature-description">Create your personal collection of favorite recipes for easy access.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="feature-title">Mobile Friendly</h3>
-                    <p class="feature-description">Access your recipes anywhere with our responsive design.</p>
-                </div>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Why Choose Recipe Hub?</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3 class="feature-title">Smart Search</h3>
+            <p class="feature-description">
+              Find recipes by ingredients, dietary restrictions, cooking time,
+              and more.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⭐</div>
+            <h3 class="feature-title">Community Ratings</h3>
+            <p class="feature-description">
+              Rate and review recipes to help others discover the best dishes.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h3 class="feature-title">Save Favorites</h3>
+            <p class="feature-description">
+              Create your personal collection of favorite recipes for easy
+              access.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Mobile Friendly</h3>
+            <p class="feature-description">
+              Access your recipes anywhere with our responsive design.
+            </p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Call to Action -->
     <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">Ready to Start Cooking?</h2>
-                <p class="cta-description">Join thousands of food enthusiasts and discover your next favorite recipe today.</p>
-                <a href="signin.html" class="btn btn-primary btn-large">Get Started Now</a>
-            </div>
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Start Cooking?</h2>
+          <p class="cta-description">
+            Join thousands of food enthusiasts and discover your next favorite
+            recipe today.
+          </p>
+          <a href="signin.html" class="btn btn-primary btn-large"
+            >Get Started Now</a
+          >
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3 class="brand-title">Recipe Hub</h3>
-                    <p class="footer-description">Your ultimate destination for discovering and sharing simple and amazing recipes.</p>
-                </div>
-                <div class="footer-links">
-                    <div class="link-group">
-                        <h4 class="link-title">Quick Links</h4>
-                        <a href="#home" class="footer-link">Home</a>
-                        <a href="#recipes" class="footer-link">Recipes</a>
-                        <a href="#search" class="footer-link">Search</a>
-                    </div>
-                    <div class="link-group">
-                        <h4 class="link-title">Account</h4>
-                        <a href="signin.html" class="footer-link">Sign In</a>
-                        <a href="signin.html" class="footer-link">Register</a>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3 class="brand-title">Recipe Hub</h3>
+            <p class="footer-description">
+              Your ultimate destination for discovering and sharing simple and
+              amazing recipes.
+            </p>
+          </div>
+          <div class="footer-links">
+            <div class="link-group">
+              <h4 class="link-title">Quick Links</h4>
+              <a href="#home" class="footer-link">Home</a>
+              <a href="#recipes" class="footer-link">Recipes</a>
+              <a href="#search" class="footer-link">Search</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Recipe Hub. This site is a demo for educational use.</p>
+            <div class="link-group">
+              <h4 class="link-title">Account</h4>
+              <a href="signin.html" class="footer-link">Sign In</a>
+              <a href="signin.html" class="footer-link">Register</a>
             </div>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 Recipe Hub. This site is a demo for educational use.
+          </p>
+        </div>
+      </div>
     </footer>
 
     <script src="./js/index.js"></script>
-</body>
+  </body>
 </html>

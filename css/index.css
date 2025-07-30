@@ -996,6 +996,256 @@ body.modal-open {
     }
 }
 
+/* Favorites System Styling */
+.favorites-section {
+    background-color: #1a1a1a;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
+    border: 1px solid #565656;
+}
+
+.favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.favorites-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffa500;
+}
+
+.favorite-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.favorite-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.favorite-btn:hover:before {
+    left: 100%;
+}
+
+.btn-add-favorite {
+    background-color: transparent;
+    color: #ffa500;
+    border: 2px solid #ffa500;
+}
+
+.btn-add-favorite:hover {
+    background-color: #ffa500;
+    color: #202020;
+    transform: translateY(-1px);
+}
+
+.btn-remove-favorite {
+    background-color: #ffa500;
+    color: #202020;
+    border: 2px solid #ffa500;
+}
+
+.btn-remove-favorite:hover {
+    background-color: #e69500;
+    border-color: #e69500;
+    transform: translateY(-1px);
+}
+
+.favorite-icon {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.favorite-btn:hover .favorite-icon {
+    transform: scale(1.2);
+}
+
+.favorite-success {
+    background-color: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: #22c55e;
+    font-weight: 500;
+    display: none;
+    animation: slideInDown 0.3s ease-out;
+    margin-top: 1rem;
+}
+
+.favorite-success.show {
+    display: block;
+}
+
+.favorite-removed {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: #ef4444;
+    font-weight: 500;
+    display: none;
+    animation: slideInDown 0.3s ease-out;
+    margin-top: 1rem;
+}
+
+.favorite-removed.show {
+    display: block;
+}
+
+/* Recipe Card Favorite Indicator */
+.recipe-card {
+    position: relative;
+}
+
+.recipe-favorite-indicator {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba(255, 165, 0, 0.9);
+    color: #202020;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 165, 0, 0.3);
+}
+
+.recipe-card.is-favorite .recipe-favorite-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.recipe-favorite-indicator:hover {
+    transform: scale(1.1);
+    background-color: #ffa500;
+}
+
+/* Favorites Filter Button Enhancement */
+.filter-btn.favorites-filter {
+    position: relative;
+}
+
+.favorites-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ffa500;
+    color: #202020;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+.favorites-count.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Empty Favorites State */
+.empty-favorites {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #cccccc;
+}
+
+.empty-favorites-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-favorites-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #ffa500;
+}
+
+.empty-favorites-description {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.favorites-animation {
+    animation: favoritesPulse 2s ease-in-out infinite;
+}
+
+@keyframes favoritesPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Mobile responsive adjustments for favorites */
+@media (max-width: 768px) {
+    .favorites-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .favorite-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .recipe-favorite-indicator {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorite-btn {
+        font-size: 0.8rem;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
 .load-more-container {
     text-align: center;
 }

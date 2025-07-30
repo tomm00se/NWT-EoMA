@@ -404,6 +404,381 @@ body {
     font-weight: 600;
 }
 
+/* Recipe Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.314s ease;
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #202020;
+    border-radius: 1rem;
+    max-width: 50rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid #565656;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.314s ease;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba(32, 32, 32, 0.8);
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.314s ease;
+    backdrop-filter: blur(10px);
+}
+
+.modal-close:hover {
+    background-color: rgba(255, 165, 0, 0.8);
+    color: #202020;
+    transform: scale(1.1);
+}
+
+.modal-header {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.modal-hero-image {
+    width: 100%;
+    height: 16rem;
+    background: linear-gradient(45deg, #ffa500, #e69500);
+    border-radius: 1rem 1rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #202020;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-title-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 2rem;
+    color: #ffffff;
+}
+
+.modal-recipe-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.modal-recipe-meta {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.modal-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffa500;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 2rem;
+    padding-top: 0;
+}
+
+.modal-section {
+    margin-bottom: 2rem;
+}
+
+.modal-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffa500;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #565656;
+    padding-bottom: 0.5rem;
+}
+
+.modal-description {
+    color: #cccccc;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.ingredients-list {
+    list-style: none;
+    padding: 0;
+}
+
+.ingredient-item {
+    background-color: #1a1a1a;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid #ffa500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.ingredient-item:hover {
+    background-color: #2a2a2a;
+}
+
+.ingredient-name {
+    font-weight: 500;
+}
+
+.ingredient-quantity {
+    color: #ffa500;
+    font-weight: 600;
+}
+
+.instructions-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: step-counter;
+}
+
+.instruction-step {
+    background-color: #1a1a1a;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #ffa500;
+    position: relative;
+    counter-increment: step-counter;
+    transition: background-color 0.2s ease;
+}
+
+.instruction-step:hover {
+    background-color: #2a2a2a;
+}
+
+.instruction-step::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: -2px;
+    top: -10px;
+    background-color: #ffa500;
+    color: #202020;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.instruction-text {
+    line-height: 1.6;
+    color: #cccccc;
+    margin-left: 1rem;
+}
+
+.modal-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.modal-tag {
+    background-color: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+/* Modal Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 0.5rem;
+        max-height: 95vh;
+    }
+    
+    .modal-hero-image {
+        height: 12.5rem;
+        font-size: 3rem;
+    }
+    
+    .modal-recipe-title {
+        font-size: 1.5rem;
+    }
+    
+    .modal-title-section {
+        padding: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-recipe-meta {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 0.5rem;
+    }
+    
+    .modal-hero-image {
+        height: 9.5rem;
+        font-size: 2.5rem;
+    }
+    
+    .modal-recipe-title {
+        font-size: 1.25rem;
+    }
+    
+    .modal-close {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.25rem;
+    }
+}
+
+/* Body scroll lock when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Loading animation for modal content */
+.modal-content.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.modal-content.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: -20px 0 0 -20px;
+    border: 3px solid #565656;
+    border-top: 3px solid #ffa500;
+    border-radius: 50%;
+    animation: modalSpin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes modalSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Ingredient and instruction animations */
+.ingredient-item {
+    animation: slideInLeft 0.3s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.ingredient-item:nth-child(1) { animation-delay: 0.1s; }
+.ingredient-item:nth-child(2) { animation-delay: 0.2s; }
+.ingredient-item:nth-child(3) { animation-delay: 0.3s; }
+.ingredient-item:nth-child(4) { animation-delay: 0.4s; }
+.ingredient-item:nth-child(n+5) { animation-delay: 0.5s; }
+
+.instruction-step {
+    animation: slideInRight 0.3s ease-out forwards;
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.instruction-step:nth-child(1) { animation-delay: 0.2s; }
+.instruction-step:nth-child(2) { animation-delay: 0.4s; }
+.instruction-step:nth-child(3) { animation-delay: 0.6s; }
+.instruction-step:nth-child(4) { animation-delay: 0.8s; }
+.instruction-step:nth-child(n+5) { animation-delay: 1s; }
+
+@keyframes slideInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Modal tags animation */
+.modal-tag {
+    animation: popIn 0.2s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.modal-tag:nth-child(1) { animation-delay: 0.1s; }
+.modal-tag:nth-child(2) { animation-delay: 0.2s; }
+.modal-tag:nth-child(3) { animation-delay: 0.3s; }
+.modal-tag:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes popIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .load-more-container {
     text-align: center;
 }

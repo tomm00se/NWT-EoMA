@@ -8,7 +8,7 @@ class UserService {
         $this->model = new UserModel();
     }
 
-    public function validateRegistration($name, $email, $password) {
+    public function validateRegistration($name, $email, $password, $dietary_preference = 'none') {
         if (empty($name) || empty($email) || empty($password)) {
             return "All fields are required.";
         }
@@ -19,6 +19,12 @@ class UserService {
 
         if (!preg_match('/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $password)) {
             return "Password must be at least 8 alphanumeric characters.";
+        }
+
+        // Validate dietary preference
+        $allowed_preferences = ['none', 'vegan', 'vegetarian', 'pescetarian', 'gluten_free'];
+        if (!in_array($dietary_preference, $allowed_preferences)) {
+            return "Invalid dietary preference selected.";
         }
 
         return true;

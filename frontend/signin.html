@@ -74,7 +74,10 @@
         <div class="auth-container register-container" id="registerContainer">
             <form class="register-form" id="registrationForm">
                 <h2 class="form-title">Create Account</h2>
-                
+
+                <!-- Status message display -->
+                <div class="sign-in-state" id="registerState"></div>
+
                 <form id="registrationForm">
                 <label for="registerName" class="form-label">Full Name</label>
                 <input
@@ -117,6 +120,20 @@
                   required
                   class="form-input"
                 />
+
+                <label for="registerDietaryRequirement" class="form-label">Dietary Preference</label>
+                <select
+                  id="registerDietaryRequirement"
+                  name="dietary_preference"
+                  required
+                  class="form-input"
+                >
+                  <option value="none">No dietary restrictions</option>
+                  <option value="vegan">Vegan</option>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="pescetarian">Pescetarian</option>
+                  <option value="gluten_free">Gluten Free</option>
+                </select>
                 
                 <button type="submit" class="btn btn-primary">Create Account</button>
                 

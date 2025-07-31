@@ -11,7 +11,7 @@ class UserController {
         session_set_cookie_params([
             'lifetime' => 86400,
             'path' => '/',
-            'secure' => true,
+            'secure' => false, // Set to false for local development
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
@@ -32,7 +32,7 @@ class UserController {
         $dietary_preference = $data['dietary_preference'] ?? 'none';
         
 
-        $validation = $this->service->validateRegistration($name, $email, $password);
+        $validation = $this->service->validateRegistration($name, $email, $password, $dietary_preference);
         if ($validation !== true) {
             http_response_code(400);
             echo json_encode(["message" => $validation]);

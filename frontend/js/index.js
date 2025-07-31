@@ -14,9 +14,11 @@ const closeModal = document.getElementById("closeModal");
 const cancelSignOut = document.getElementById("cancelSignOut");
 const confirmSignOut = document.getElementById("confirmSignOut");
 
+// recipe modal is created dynamically when needed
+
 function openModal() {
   signOutModal.classList.add("active");
-  document.body.style.overflow = "hidden"; // Prevent background scrolling
+  document.body.style.overflow = "hidden"; // no scroll when modal open
 }
 
 function closeModalFunc() {
@@ -33,7 +35,7 @@ signOutModal.addEventListener("click", (e) => {
   }
 });
 
-// esc key to close
+// esc key closes sign out modal
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && signOutModal.classList.contains("active")) {
     closeModalFunc();
@@ -55,16 +57,27 @@ async function updateNavigationForUser() {
     signInLink.classList.add("user-greeting");
     signInLink.addEventListener("click", openModal);
 
-    // Load user's favorites
+    // load favorites
     await loadUserFavorites();
+    // sync ratings if recipes are already loaded
+    if (allRecipes.length > 0) {
+      await syncUserRatingsWithServer();
+      // refresh display to show updated ratings
+      const currentRecipes =
+        filteredRecipes.length > 0 ? filteredRecipes : allRecipes;
+      displayRecipes(currentRecipes, false);
+    }
   } else {
     signInLink.textContent = "Sign In";
     signInLink.href = "signin.html";
     signInLink.classList.remove("user-greeting");
     signInLink.removeEventListener("click", openModal);
 
-    // Clear favorites when user logs out
+    // clear favorites on logout
     localStorage.removeItem("favorites");
+    // clear user ratings
+    userRatings = {};
+    localStorage.removeItem("userRatings");
   }
 }
 
@@ -80,26 +93,44 @@ async function handleLogout() {
     if (response.ok) {
       localStorage.removeItem("user");
       localStorage.removeItem("favorites");
+      localStorage.removeItem("userRatings");
+      userRatings = {};
       await updateNavigationForUser();
 
-      // refresh recipe display to update heart icons
-      displayRecipes(allRecipes);
+      // refresh hearts
+      displayRecipes(
+        filteredRecipes.length > 0 ? filteredRecipes : allRecipes,
+        false
+      );
     } else {
       console.error("Logout failed");
     }
   } catch (error) {
     console.error("Logout error:", error);
-    // clear anyway if server fails
+    // clear local data even if server fails
     localStorage.removeItem("user");
     localStorage.removeItem("favorites");
+    localStorage.removeItem("userRatings");
+    userRatings = {};
     await updateNavigationForUser();
-    displayRecipes(allRecipes);
+    displayRecipes(
+      filteredRecipes.length > 0 ? filteredRecipes : allRecipes,
+      false
+    );
   }
 }
 
 // the base url for all PHP API requests (Make sure your web server is pointing to this!)
 const baseUrl = `http://localhost/backend/public/api`;
 let allRecipes = [];
+
+// pagination settings
+const RECIPES_PER_PAGE = 6;
+let currentlyDisplayed = 0;
+let filteredRecipes = [];
+
+// rating storage
+let userRatings = {}; // stores {recipeId: userRating}
 
 const fetchRecipe = async (id) => {
   const path = `${baseUrl}/recipes/getFull?id=${id}`;
@@ -119,12 +150,13 @@ const fetchAllRecipes = async () => {
     data.map((recipe) => fetchRecipe(recipe.recipe_id))
   );
 
-  displayRecipes(allRecipes);
+  // sync user ratings with server after recipes are loaded
+  await syncUserRatingsWithServer();
 
-  console.log(allRecipes);
+  displayRecipes(allRecipes, false); // show first page
 };
 
-// navbar scroll effect
+// navbar scroll styling
 window.addEventListener("scroll", () => {
   if (window.scrollY > 50) {
     navbar.classList.add("scrolled");
@@ -133,13 +165,13 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// mobile navigation toggle
+// mobile nav toggle
 navToggle.addEventListener("click", () => {
   navToggle.classList.toggle("active");
   navMenu.classList.toggle("active");
 });
 
-// close mobile menu when clicking on nav links
+// close mobile menu on nav link click
 document.querySelectorAll(".nav-link").forEach((link) => {
   link.addEventListener("click", () => {
     navToggle.classList.remove("active");
@@ -147,13 +179,13 @@ document.querySelectorAll(".nav-link").forEach((link) => {
   });
 });
 
-// smooth scrolling for navigation links
+// smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
     const scrollTarget = document.querySelector(this.getAttribute("href"));
     if (scrollTarget) {
-      const offsetTop = scrollTarget.offsetTop - 70; // Account for fixed navbar
+      const offsetTop = scrollTarget.offsetTop - 70; // fixed navbar offset
       window.scrollTo({
         top: offsetTop,
         behavior: "smooth",
@@ -162,7 +194,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// explore button functionality
+// explore button scrolls to recipes
 exploreBtn.addEventListener("click", () => {
   const recipesSection = document.getElementById("recipes");
   const offsetTop = recipesSection.offsetTop - 70;
@@ -172,7 +204,7 @@ exploreBtn.addEventListener("click", () => {
   });
 });
 
-// search functionality
+// search recipes
 function handleSearch() {
   const searchTerm = searchInput.value.trim().toLowerCase();
   const sectionTitle = document.querySelector("#recipes .section-title");
@@ -192,10 +224,10 @@ function handleSearch() {
           ))
     );
 
-    displayRecipes(filtered);
+    displayRecipes(filtered, false); // reset pagination for new search
     sectionTitle.textContent = `Search Results for "${searchTerm}" (${filtered.length} found)`;
   } else {
-    displayRecipes(allRecipes);
+    displayRecipes(allRecipes, false);
     sectionTitle.textContent = "Featured Recipes";
     filterBtns.forEach((b) => b.classList.remove("active"));
     document.querySelector('[data-filter="all"]').classList.add("active");
@@ -255,7 +287,7 @@ filterBtns.forEach((btn) => {
       });
     }
 
-    displayRecipes(filtered);
+    displayRecipes(filtered, false); // reset pagination for new filter
 
     const sectionTitle = document.querySelector("#recipes .section-title");
     if (filterValue === "all") {
@@ -270,6 +302,20 @@ filterBtns.forEach((btn) => {
 function createRecipeCard(recipe) {
   const isFavorited = checkIfFavorited(recipe.recipe_id);
   const heartClass = isFavorited ? "heart-icon favorited" : "heart-icon";
+  const userRating = getUserRating(recipe.recipe_id);
+
+  // Parse the average rating from the recipe data
+  let averageRating = 0;
+  if (
+    recipe.rating &&
+    recipe.rating !== "No rating" &&
+    recipe.rating !== "Not rated"
+  ) {
+    averageRating = parseFloat(recipe.rating);
+    if (isNaN(averageRating)) {
+      averageRating = 0;
+    }
+  }
 
   return `
         <div class="recipe-card" data-recipe-id="${recipe.recipe_id}">
@@ -295,14 +341,141 @@ function createRecipeCard(recipe) {
                     <span class="recipe-time">⏱️ ${
                       recipe.total_time
                     } minutes</span>
-                    <span class="recipe-rating">★ ${recipe.rating}</span>
+                    <div class="recipe-rating-container" onclick="event.stopPropagation();">
+                        ${createStarRating(
+                          recipe.recipe_id,
+                          averageRating,
+                          userRating,
+                          true,
+                          false
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     `;
 }
 
-// Check if a recipe is favorited by the current user
+// recipe modal creation
+function createRecipeModal(recipe) {
+  const ingredientsHTML =
+    recipe.ingredients?.length > 0
+      ? recipe.ingredients
+          .map(
+            (ingredient) =>
+              `<li>${ingredient.quantity || ""} ${ingredient.unit || ""} ${
+                ingredient.name
+              }`.trim() + "</li>"
+          )
+          .join("")
+      : "<li>No ingredients listed.</li>";
+
+  const instructionsHTML =
+    recipe.steps?.length > 0
+      ? recipe.steps
+          .map((step, index) => {
+            let instructionText = "";
+            if (typeof step === "string") {
+              instructionText = step;
+            } else if (step && typeof step === "object") {
+              instructionText = step.instructions || JSON.stringify(step);
+            } else {
+              instructionText = `Step ${index + 1}`;
+            }
+
+            return `<li>${instructionText}</li>`;
+          })
+          .filter((item, index, array) => array.indexOf(item) === index) // remove duplicates
+          .join("")
+      : "<li>No instructions available.</li>";
+
+  const userRating = getUserRating(recipe.recipe_id);
+
+  // Parse the average rating from the recipe data
+  let averageRating = 0;
+  if (
+    recipe.rating &&
+    recipe.rating !== "No rating" &&
+    recipe.rating !== "Not rated"
+  ) {
+    averageRating = parseFloat(recipe.rating);
+    if (isNaN(averageRating)) {
+      averageRating = 0;
+    }
+  }
+
+  return `
+    <div class="modal-overlay" id="recipeModal">
+      <div class="modal-content recipe-modal">
+        <div class="modal-header">
+          <div class="modal-title">${recipe.title}</div>
+          <button class="modal-close" id="closeRecipeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="recipe-modal-content">
+            <div class="recipe-header">
+              <div class="recipe-icon">${recipe.icon || "🍽️"}</div>
+              <div class="recipe-basic-info">
+                <h3 class="recipe-modal-title">${recipe.title}</h3>
+                <div class="recipe-modal-meta">
+                  <span class="recipe-modal-category">${
+                    recipe.categories?.[0]?.name || "Recipe"
+                  }</span>
+                  <span class="recipe-modal-time">⏱️ ${
+                    recipe.total_time
+                  } minutes</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="recipe-rating-section">
+              <h4 class="section-heading">Rating</h4>
+              <div class="modal-rating-container">
+                ${createStarRating(
+                  recipe.recipe_id,
+                  averageRating,
+                  userRating,
+                  true,
+                  false
+                )}
+              </div>
+            </div>
+
+            <div class="recipe-description-section">
+              <p class="recipe-modal-description">${
+                recipe.description || "No description available."
+              }</p>
+            </div>
+
+            <div class="recipe-details-grid">
+              <div class="ingredients-section">
+                <h4 class="section-heading">Ingredients</h4>
+                <ul class="ingredients-list">
+                  ${ingredientsHTML}
+                </ul>
+              </div>
+
+              <div class="instructions-section">
+                <h4 class="section-heading">Instructions</h4>
+                <ol class="instructions-list">
+                  ${instructionsHTML}
+                </ol>
+              </div>
+            </div>
+
+            <div class="recipe-additional-info">
+              <div class="nutrition-info">
+                <!-- Future nutrition info can go here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// check if recipe is favorited
 function checkIfFavorited(recipeId) {
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) return false;
@@ -311,7 +484,7 @@ function checkIfFavorited(recipeId) {
   return favorites.includes(recipeId);
 }
 
-// Toggle favorite status for a recipe
+// toggle recipe favorite
 async function toggleFavorite(recipeId) {
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) {
@@ -337,13 +510,12 @@ async function toggleFavorite(recipeId) {
       if (response.ok) {
         heartIcon.classList.remove("favorited");
         removeFromLocalFavorites(recipeId);
-        console.log("Recipe removed from favorites");
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.error || "Failed to remove from favorites"}`);
       }
     } else {
-      // Add to favorites
+      // add to favorites
       const response = await fetch(`${baseUrl}/favourites/add/`, {
         method: "POST",
         headers: {
@@ -355,7 +527,6 @@ async function toggleFavorite(recipeId) {
       if (response.ok) {
         heartIcon.classList.add("favorited");
         addToLocalFavorites(recipeId);
-        console.log("Recipe added to favorites");
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.error || "Failed to add to favorites"}`);
@@ -367,7 +538,7 @@ async function toggleFavorite(recipeId) {
   }
 }
 
-// Add recipe to local favorites storage
+// add to local favorites
 function addToLocalFavorites(recipeId) {
   const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
   if (!favorites.includes(recipeId)) {
@@ -376,14 +547,14 @@ function addToLocalFavorites(recipeId) {
   }
 }
 
-// Remove recipe from local favorites storage
+// remove from local favorites
 function removeFromLocalFavorites(recipeId) {
   const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
   const updatedFavorites = favorites.filter((id) => id !== recipeId);
   localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
 }
 
-// Load user's favorites from server
+// load favorites from server
 async function loadUserFavorites() {
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) return;
@@ -400,12 +571,311 @@ async function loadUserFavorites() {
   }
 }
 
-// Display recipes in grid
-function displayRecipes(recipes) {
-  recipesGrid.innerHTML = recipes
+// load ratings from localStorage
+function loadStoredRatings() {
+  if (Object.keys(userRatings).length > 0) return;
+
+  const storedRatings = localStorage.getItem("userRatings");
+  if (storedRatings) {
+    try {
+      userRatings = JSON.parse(storedRatings);
+    } catch (error) {
+      console.error("Error parsing stored ratings:", error);
+      userRatings = {};
+    }
+  } else {
+    userRatings = {};
+  }
+}
+
+// load user ratings from server
+async function syncUserRatingsWithServer() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !allRecipes.length) return;
+
+  try {
+    const updatedRatings = {};
+
+    for (const recipe of allRecipes) {
+      const ratingData = await fetchRecipeRating(recipe.recipe_id);
+      if (ratingData && ratingData.comments) {
+        const userComment = ratingData.comments.find(
+          (comment) =>
+            comment.user_id == user.user_id ||
+            comment.user_id == String(user.user_id)
+        );
+
+        if (userComment) {
+          updatedRatings[recipe.recipe_id] = parseInt(userComment.rating);
+        }
+      }
+    }
+
+    if (Object.keys(updatedRatings).length > 0) {
+      userRatings = { ...userRatings, ...updatedRatings };
+      localStorage.setItem("userRatings", JSON.stringify(userRatings));
+    }
+  } catch (error) {
+    console.error("Error syncing user ratings:", error);
+  }
+}
+
+// fetch recipe rating from API
+async function fetchRecipeRating(recipeId) {
+  try {
+    const url = `${baseUrl}/ratings/getByRecipe/?recipe_id=${recipeId}`;
+    const response = await fetch(url);
+
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error(`Error fetching rating for recipe ${recipeId}:`, error);
+  }
+  return null;
+}
+
+async function submitRating(recipeId, rating, comment = null) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    alert("Please sign in to rate recipes!");
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/ratings/rate/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipe_id: recipeId,
+        rating: rating,
+        comment: comment,
+      }),
+    });
+
+    if (response.ok) {
+      userRatings[recipeId] = rating;
+      localStorage.setItem("userRatings", JSON.stringify(userRatings));
+      return true;
+    } else {
+      const errorData = await response.json();
+      alert(`Error: ${errorData.error || "Failed to submit rating"}`);
+      return false;
+    }
+  } catch (error) {
+    alert("An error occurred while submitting rating. Please try again.");
+    return false;
+  }
+}
+
+function getUserRating(recipeId) {
+  return userRatings[recipeId] || 0;
+}
+
+// create star rating component
+function createStarRating(
+  recipeId,
+  averageRating = 0,
+  userRating = 0,
+  interactive = false,
+  showText = true
+) {
+  const stars = [];
+  const starCount = 5;
+
+  // show user rating if they've rated, otherwise fall back to average
+  const visualRating = userRating > 0 ? userRating : averageRating;
+  const numericRating = userRating > 0 ? userRating : averageRating;
+
+  for (let i = 1; i <= starCount; i++) {
+    const isFilled = i <= visualRating;
+    const isUserRated = i <= userRating;
+    const starClass = interactive ? "star-interactive" : "star-display";
+    const fillClass = isFilled ? "filled" : "";
+    const userClass = isUserRated ? "user-rated" : "";
+
+    if (interactive) {
+      stars.push(`
+        <span class="${starClass} ${fillClass} ${userClass}" 
+              data-rating="${i}" 
+              data-recipe-id="${recipeId}">
+          ★
+        </span>
+      `);
+    } else {
+      stars.push(`
+        <span class="${starClass} ${fillClass}">★</span>
+      `);
+    }
+  }
+
+  const ratingText = showText
+    ? `<span class="rating-text">${
+        numericRating > 0 ? numericRating.toFixed(1) : "No rating"
+      }</span>`
+    : "";
+  const userRatingText =
+    interactive && userRating > 0
+      ? `<span class="user-rating-text">Your rating: ${userRating}</span>`
+      : "";
+
+  return `
+    <div class="star-rating" data-recipe-id="${recipeId}">
+      <div class="stars">${stars.join("")}</div>
+      ${ratingText}
+      ${userRatingText}
+    </div>
+  `;
+}
+
+function highlightStars(recipeId, rating) {
+  const container = document.querySelector(
+    `.star-rating[data-recipe-id="${recipeId}"]`
+  );
+  if (!container) return;
+
+  container.querySelectorAll(".star-interactive").forEach((star, index) => {
+    const starRating = index + 1;
+    star.classList.toggle("highlight", starRating <= rating);
+  });
+}
+
+function resetStars(recipeId) {
+  const container = document.querySelector(
+    `.star-rating[data-recipe-id="${recipeId}"]`
+  );
+  if (!container) return;
+
+  container.querySelectorAll(".star-interactive").forEach((star) => {
+    star.classList.remove("highlight");
+  });
+}
+
+function setupStarEventListeners(recipeId, forceRefresh = false) {
+  const stars = document.querySelectorAll(
+    `.star-interactive[data-recipe-id="${recipeId}"]`
+  );
+
+  stars.forEach((star) => {
+    if (!forceRefresh && star.dataset.hasListeners === "true") {
+      return;
+    }
+
+    const rating = parseInt(star.getAttribute("data-rating"));
+    if (isNaN(rating) || rating < 1 || rating > 5) return;
+
+    star.addEventListener("click", (e) => {
+      e.stopPropagation();
+      rateRecipe(recipeId, rating);
+    });
+
+    star.addEventListener("mouseover", (e) => {
+      e.stopPropagation();
+      highlightStars(recipeId, rating);
+    });
+
+    star.addEventListener("mouseout", (e) => {
+      e.stopPropagation();
+      resetStars(recipeId);
+    });
+
+    star.dataset.hasListeners = "true";
+  });
+}
+
+async function rateRecipe(recipeId, rating) {
+  const success = await submitRating(recipeId, rating);
+  if (success) {
+    updateRecipeRatingDisplay(recipeId);
+  }
+}
+
+async function updateRecipeRatingDisplay(recipeId) {
+  // fetch updated rating data and refresh displays
+  const ratingData = await fetchRecipeRating(recipeId);
+  if (ratingData) {
+    // update recipe in allRecipes array
+    const recipe = allRecipes.find((r) => r.recipe_id == recipeId);
+    if (recipe) {
+      recipe.rating = ratingData.rating.average_rating
+        ? parseFloat(ratingData.rating.average_rating).toFixed(1)
+        : "No rating";
+    }
+
+    // refresh recipe displays without resetting pagination
+    const currentRecipes =
+      filteredRecipes.length > 0 ? filteredRecipes : allRecipes;
+    displayRecipes(currentRecipes, false);
+
+    // if modal is open for this recipe, update it in-place
+    const openModal = document.getElementById("recipeModal");
+    if (openModal && openModal.classList.contains("active")) {
+      const modalRecipeId = openModal
+        .querySelector(".star-rating")
+        ?.getAttribute("data-recipe-id");
+      if (modalRecipeId == recipeId) {
+        updateModalRatingDisplay(recipeId, ratingData);
+      }
+    }
+  }
+}
+
+// update modal rating without closing
+function updateModalRatingDisplay(recipeId, ratingData) {
+  const modal = document.getElementById("recipeModal");
+  if (!modal) return;
+
+  const ratingContainer = modal.querySelector(".modal-rating-container");
+  if (!ratingContainer) return;
+
+  // get updated rating values
+  const averageRating = ratingData?.rating?.average_rating
+    ? parseFloat(ratingData.rating.average_rating)
+    : 0;
+  const userRating = getUserRating(recipeId);
+
+  // create new star rating HTML
+  const newStarHTML = createStarRating(
+    recipeId,
+    averageRating,
+    userRating,
+    true,
+    false
+  );
+  ratingContainer.innerHTML = newStarHTML;
+
+  // setup event listeners for new stars
+  setupStarEventListeners(recipeId, true);
+}
+
+// display recipe grid with pagination
+function displayRecipes(recipes, append = false) {
+  filteredRecipes = recipes;
+
+  if (!append) {
+    currentlyDisplayed = 0;
+    recipesGrid.innerHTML = "";
+  }
+
+  const startIndex = currentlyDisplayed;
+  const endIndex = Math.min(startIndex + RECIPES_PER_PAGE, recipes.length);
+  const recipesToShow = recipes.slice(startIndex, endIndex);
+
+  const newCardsHTML = recipesToShow
     .map((recipe) => createRecipeCard(recipe))
     .join("");
 
+  if (append) {
+    recipesGrid.insertAdjacentHTML("beforeend", newCardsHTML);
+  } else {
+    recipesGrid.innerHTML = newCardsHTML;
+  }
+
+  currentlyDisplayed = endIndex;
+
+  // add click handlers to new cards
   document.querySelectorAll(".recipe-card").forEach((card) => {
     card.addEventListener("click", () => {
       const recipeId = card.getAttribute("data-recipe-id");
@@ -413,7 +883,26 @@ function displayRecipes(recipes) {
     });
   });
 
+  // setup star event listeners for recipe cards
+  recipesToShow.forEach((recipe) => {
+    setupStarEventListeners(recipe.recipe_id);
+  });
+
   updateHeartIcons();
+  updateLoadMoreButton();
+}
+
+// update load more button visibility and text
+function updateLoadMoreButton() {
+  const hasMore = currentlyDisplayed < filteredRecipes.length;
+  const remaining = filteredRecipes.length - currentlyDisplayed;
+
+  if (hasMore) {
+    loadMoreBtn.style.display = "inline-block";
+    loadMoreBtn.textContent = `Load More (${remaining} remaining)`;
+  } else {
+    loadMoreBtn.style.display = "none";
+  }
 }
 
 function updateHeartIcons() {
@@ -434,28 +923,66 @@ function updateHeartIcons() {
 
 function showRecipeModal(recipeId) {
   const recipe = allRecipes.find((r) => r.recipe_id == recipeId);
-  if (recipe) {
-    // TODO: replace with proper modal
-    alert(
-      `Recipe Details:\n\nTitle: ${recipe.title}\nCategory: ${
-        recipe.categories[0]?.name || "N/A"
-      }\nTime: ${recipe.total_time}\nRating: ${
-        recipe.rating || "N/A"
-      }\n\nDescription: ${
-        recipe.description
-      }\n\nNote: Full recipe details will be available after signing in!`
-    );
+  if (!recipe) return;
+
+  // remove existing modal first
+  const existingModal = document.getElementById("recipeModal");
+  if (existingModal) {
+    existingModal.remove();
   }
+
+  // create and insert modal
+  const modalHTML = createRecipeModal(recipe);
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  // get modal elements
+  const modal = document.getElementById("recipeModal");
+  const closeButton = document.getElementById("closeRecipeModal");
+
+  // setup star rating event listeners
+  setupStarEventListeners(recipeId);
+
+  // close handler
+  const closeModal = () => {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+    // cleanup DOM after transition
+    setTimeout(() => {
+      if (modal && modal.parentNode) {
+        modal.remove();
+      }
+    }, 300); // match CSS transition
+  };
+
+  // setup event listeners
+  closeButton.addEventListener("click", closeModal);
+
+  // escape key handler for this modal
+  const handleEscape = (e) => {
+    if (e.key === "Escape" && modal.classList.contains("active")) {
+      closeModal();
+      document.removeEventListener("keydown", handleEscape);
+    }
+  };
+  document.addEventListener("keydown", handleEscape);
+
+  // show modal
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
 }
 
 loadMoreBtn.addEventListener("click", () => {
-  // TODO: implement proper pagination
-  alert(
-    "More recipes would be loaded here! Please sign in to access the full recipe collection."
-  );
+  // load more recipes with animation
+  loadMoreBtn.textContent = "Loading...";
+  loadMoreBtn.disabled = true;
+
+  setTimeout(() => {
+    displayRecipes(filteredRecipes, true);
+    loadMoreBtn.disabled = false;
+  }, 300); // small delay for UX reasons (better than instantly served)
 });
 
-// animation on scroll for recipe cards
+// scroll animations
 function animateOnScroll() {
   const cards = document.querySelectorAll(".recipe-card, .feature-card");
   const observer = new IntersectionObserver(
@@ -480,12 +1007,14 @@ function animateOnScroll() {
 
 // initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
+  // load stored ratings first for immediate display
+  loadStoredRatings();
   updateNavigationForUser();
   await loadUserFavorites();
   fetchAllRecipes();
   animateOnScroll();
 
-  // animate hero
+  // hero animations
   setTimeout(() => {
     document.querySelector(".hero-content").style.opacity = "1";
     document.querySelector(".hero-content").style.transform = "translateY(0)";
@@ -497,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }, 400);
 });
 
-// close mobile menu on resize
+// cleanup mobile menu on resize
 window.addEventListener("resize", () => {
   if (window.innerWidth > 768) {
     navMenu.classList.remove("active");

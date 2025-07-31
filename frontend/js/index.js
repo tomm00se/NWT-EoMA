@@ -603,15 +603,15 @@ async function syncUserRatingsWithServer() {
 
     for (const recipe of allRecipes) {
       const ratingData = await fetchRecipeRating(recipe.recipe_id);
-      if (ratingData && ratingData.comments) {
-        const userComment = ratingData.comments.find(
-          (comment) =>
-            comment.user_id == user.user_id ||
-            comment.user_id == String(user.user_id)
+      if (ratingData && ratingData.ratings) {
+        const userRating = ratingData.ratings.find(
+          (rating) =>
+            rating.user_id == user.user_id ||
+            rating.user_id == String(user.user_id)
         );
 
-        if (userComment) {
-          updatedRatings[recipe.recipe_id] = parseInt(userComment.rating);
+        if (userRating) {
+          updatedRatings[recipe.recipe_id] = parseInt(userRating.rating);
         }
       }
     }
@@ -1014,9 +1014,9 @@ function animateOnScroll() {
 document.addEventListener("DOMContentLoaded", async () => {
   // load stored ratings first for immediate display
   loadStoredRatings();
-  updateNavigationForUser();
+  await updateNavigationForUser();
   await loadUserFavorites();
-  fetchAllRecipes();
+  await fetchAllRecipes();
   animateOnScroll();
 
   // hero animations

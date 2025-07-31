@@ -20,12 +20,17 @@ class RatingModel {
         $stmt->execute([$recipeId]);
         $rating = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        //get user comments
+        $ratingsStmt = $this->db->prepare("SELECT user_id, rating, comment FROM ratings WHERE recipe_id = ?");
+        $ratingsStmt->execute([$recipeId]);
+        $ratings = $ratingsStmt->fetchAll(PDO::FETCH_ASSOC);
+        
         $commentsStmt = $this->db->prepare("SELECT user_id, rating, comment FROM ratings WHERE recipe_id = ? AND comment IS NOT NULL AND comment != ''");
         $commentsStmt->execute([$recipeId]);
         $comments = $commentsStmt->fetchAll(PDO::FETCH_ASSOC);
+        
         return [
             'rating' => $rating ?: ['average_rating' => null, 'total_ratings' => 0],
+            'ratings' => $ratings,
             'comments' => $comments
         ];
     }

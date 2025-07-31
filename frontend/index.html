@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Hub - Discover Simp-mazing Recipes</title>
-    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 </head>
 <body>
     <!-- Navigation Header -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-brand">
+                <a href="#home" class="brand-logo-link">
+                    <img src="assets/icons/favicon.svg" alt="Recipe Hub Logo" class="brand-logo" />
+                </a>
                 <h1 class="brand-title">
                   <a href="#home">Recipe Hub</a>
                 </h1>
@@ -66,11 +70,15 @@
                     <button class="search-btn" id="searchBtn">Search</button>
                 </div>
                 <div class="search-filters">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="vegetarian">Vegetarian</button>
-                    <button class="filter-btn" data-filter="quick">Quick Meals</button>
-                    <button class="filter-btn" data-filter="healthy">Healthy</button>
-                    <button class="filter-btn" data-filter="dessert">Desserts</button>
+                    <button class="filter-btn active" data-search-filter="all">All</button>
+                    <button class="filter-btn favorites-filter" data-search-filter="favorites">
+                        ❤️ My Favorites
+                        <span class="favorites-count" id="favoritesCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-search-filter="vegetarian">Vegetarian</button>
+                    <button class="filter-btn" data-search-filter="quick">Quick Meals</button>
+                    <button class="filter-btn" data-search-filter="healthy">Healthy</button>
+                    <button class="filter-btn" data-search-filter="dessert">Desserts</button>
                 </div>
             </div>
         </div>
@@ -157,6 +165,6 @@
         </div>
     </footer>
 
-    <script src="./js/index.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

@@ -52,7 +52,7 @@ async function updateNavigationForUser() {
   const signInLink = document.querySelector(".signin-link");
 
   if (user && user.name) {
-    signInLink.textContent = `Hello, ${user.name}`;
+    signInLink.textContent = `Hello, ${user.name}!`;
     signInLink.href = "#";
     signInLink.classList.add("user-greeting");
     signInLink.addEventListener("click", openModal);
@@ -91,45 +91,50 @@ async function handleLogout() {
     });
 
     if (response.ok) {
+      // Clear all local data
       localStorage.removeItem("user");
       localStorage.removeItem("favorites");
       localStorage.removeItem("userRatings");
       userRatings = {};
-      await updateNavigationForUser();
 
-      // refresh hearts
+      // Update UI
+      await updateNavigationForUser();
       displayRecipes(
         filteredRecipes.length > 0 ? filteredRecipes : allRecipes,
         false
       );
+
+      // Show success message
+      alert("Successfully logged out!");
     } else {
-      console.error("Logout failed");
+      const errorData = await response.json();
+      alert(`Logout failed: ${errorData.message || "Unknown error"}`);
     }
   } catch (error) {
-    console.error("Logout error:", error);
-    // clear local data even if server fails
+    // Clear local data even if server fails
     localStorage.removeItem("user");
     localStorage.removeItem("favorites");
     localStorage.removeItem("userRatings");
     userRatings = {};
+
     await updateNavigationForUser();
     displayRecipes(
       filteredRecipes.length > 0 ? filteredRecipes : allRecipes,
       false
     );
+
+    alert("Logged out locally (server connection failed)");
   }
 }
-
 // the base url for all PHP API requests (Make sure your web server is pointing to this!)
 const baseUrl = `http://localhost/backend/public/api`;
-let allRecipes = [];
 
 // pagination settings
 const RECIPES_PER_PAGE = 6;
+
+let allRecipes = [];
 let currentlyDisplayed = 0;
 let filteredRecipes = [];
-
-// rating storage
 let userRatings = {}; // stores {recipeId: userRating}
 
 const fetchRecipe = async (id) => {

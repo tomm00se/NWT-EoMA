@@ -1,4 +1,4 @@
-// DOM element references
+// DOM elements
 const signInContainer = document.getElementById("signInContainer");
 const registerContainer = document.getElementById("registerContainer");
 const showRegisterLink = document.getElementById("showRegister");
@@ -7,23 +7,23 @@ const loginForm = document.getElementById("loginForm");
 const registrationForm = document.getElementById("registrationForm");
 const signInState = document.getElementById("signInState");
 
-// Check if user is already logged in and redirect
+// redirect if already logged in
 document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user && user.name) {
-    // User is already logged in, redirect to main page
+    // already logged in, redirect
     window.location.href = "index.html";
   }
 });
 
-// Navigation elements
+// nav elements
 const navbar = document.getElementById("navbar");
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
 
 const baseUrl = `http://localhost/backend/public/api`;
 
-// Display status messages to user with optional error styling
+// show status message
 function signInStatus(message, isError = false) {
   signInState.textContent = message;
   signInState.classList.remove("show", "error");
@@ -31,7 +31,7 @@ function signInStatus(message, isError = false) {
     signInState.classList.add("error");
   }
   signInState.classList.add("show");
-  // Auto-hide message after 5 seconds
+  // auto-hide after 5s
   setTimeout(() => {
     signInState.classList.remove("show");
   }, 5000);
@@ -45,38 +45,35 @@ function registerStatus(message, isError = false) {
     registerState.classList.add("error");
   }
   registerState.classList.add("show");
-  // Auto-hide message after 5 seconds
+  // auto-hide after 5s
   setTimeout(() => {
     registerState.classList.remove("show");
   }, 5000);
 }
 
-/**
- * Smoothly transition from sign-in to register container
- * Uses fade-out/fade-in with 0.492s timing for professional feel
- */
+// smoothly transition from sign-in to register container
 function switchToRegister() {
-  // Start fade-out of sign-in container
+  // fade out signin
   signInContainer.classList.add("fade-out");
-  // After sign-in fades out, fade-in register container
+  // fade in register
   setTimeout(() => {
     registerContainer.classList.add("fade-in");
-    signInState.classList.remove("show"); // Clear any status messages
+    signInState.classList.remove("show"); // clear status
   }, 314); // Match CSS transition duration
 }
 
-// Smoothly transition from register to sign-in container
+// back to signin
 function switchToSignIn() {
-  // Start fade-out of register container
+  // fade out register
   registerContainer.classList.remove("fade-in");
-  // After register fades out, fade-in sign-in container
+  // fade in signin
   setTimeout(() => {
     signInContainer.classList.remove("fade-out");
-    signInState.classList.remove("show"); // Clear any status messages
+    signInState.classList.remove("show"); // clear status
   }, 314); // Match CSS transition duration
 }
 
-// Navbar scroll effect
+// navbar scroll styling
 window.addEventListener("scroll", () => {
   if (window.scrollY > 50) {
     navbar.classList.add("scrolled");
@@ -85,13 +82,13 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// Mobile navigation toggle
+// mobile nav toggle
 navToggle.addEventListener("click", () => {
   navToggle.classList.toggle("active");
   navMenu.classList.toggle("active");
 });
 
-// Close mobile menu when clicking on nav links
+// close mobile menu on nav click
 document.querySelectorAll(".nav-link").forEach((link) => {
   link.addEventListener("click", () => {
     navToggle.classList.remove("active");
@@ -99,25 +96,25 @@ document.querySelectorAll(".nav-link").forEach((link) => {
   });
 });
 
-// Event listener for switching to registration form
+// switch to register form
 showRegisterLink.addEventListener("click", (e) => {
   e.preventDefault();
   switchToRegister();
 });
 
-// Event listener for switching to sign-in form
+// switch to signin form
 showSignInLink.addEventListener("click", (e) => {
   e.preventDefault();
   switchToSignIn();
 });
 
-// Handle sign-in form submission
+// signin form submit
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
-  // Basic client-side validation
+  // basic validation
   if (!email || !password) {
     signInStatus("Please enter both email and password.", true);
     return;
@@ -144,26 +141,26 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    // Store user data in localStorage for frontend use
+    // store user data
     localStorage.setItem("user", JSON.stringify(data.user));
 
-    // Clear form
+    // clear form
     loginForm.reset();
 
-    // Show success message
+    // success message
     signInStatus("Login successful! Redirecting...");
 
-    // Redirect to main page after a short delay
+    // redirect after delay
     setTimeout(() => {
       window.location.href = "index.html";
     }, 1500);
   } catch (error) {
-    // Handle login error
+    // login error
     signInStatus(error.message, true);
   }
 });
 
-// Handle registration form submission
+// register form submit
 registrationForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = document.getElementById("registerName").value;
@@ -174,16 +171,11 @@ registrationForm.addEventListener("submit", async (e) => {
     "registerDietaryRequirement"
   ).value;
 
-  // Client-side password validation
+  // password validation
   if (password !== confirmPassword) {
     registerStatus("Passwords do not match.", true);
     return;
   }
-
-  // TODO: Implement comprehensive email validation
-  // TODO: Send registration data to backend API
-  // TODO: Handle successful registration (auto-login or redirect)
-  // TODO: Handle registration errors (email exists, weak password, etc.)
 
   try {
     const response = await fetch(`${baseUrl}/users/registration/`, {
@@ -206,18 +198,18 @@ registrationForm.addEventListener("submit", async (e) => {
       throw new Error(errorMessage);
     }
 
-    // Clear form after successful validation
+    // clear form
     registrationForm.reset();
-    // Provide user feedback and transition back to sign-in
+    // success feedback
     registerStatus("Account created successfully! Please sign in.");
     switchToSignIn();
   } catch (error) {
-    // Handle registration error
+    // registration error
     registerStatus(error.message, true);
   }
 });
 
-// Handle window resize for responsive navigation
+// cleanup nav on resize
 window.addEventListener("resize", () => {
   if (window.innerWidth > 768) {
     navMenu.classList.remove("active");

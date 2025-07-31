@@ -44,6 +44,18 @@ body {
   height: 4.5rem;
 }
 
+.nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  height: 3rem;
+  width: auto;
+  margin-right: 1rem;
+  display: inline-block;
+}
+
 .brand-title a {
   font-size: 1.5rem;
   font-weight: 00;

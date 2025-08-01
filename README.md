@@ -40,7 +40,7 @@ This is our recipe web app project for our Networks and Web Technology module. I
 ### Step 2: Put the project in the right place
 
 - Copy the entire project folder to: `C:\xampp\htdocs\` (Windows) or `/Applications/XAMPP/xamppfiles/htdocs/` (Mac)
-- You should be able to access it at `http://localhost` in your browser
+- You should be able to access it at `http://localhost/frontend` in your browser
 
 ### Step 3: Set up the database
 

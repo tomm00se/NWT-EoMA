@@ -27,7 +27,7 @@ CREATE TABLE `categories` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,7 +54,7 @@ CREATE TABLE `favourites` (
   KEY `recipe_id` (`recipe_id`),
   CONSTRAINT `favourites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `favourites_ibfk_2` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`recipe_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `ingredients` (
   `ingredient_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`ingredient_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `ratings` (
   CONSTRAINT `ratings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `ratings_ibfk_2` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`recipe_id`) ON DELETE CASCADE,
   CONSTRAINT `ratings_chk_1` CHECK ((`rating` between 1 and 5))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +136,7 @@ CREATE TABLE `recipe_categories` (
   KEY `category_id` (`category_id`),
   CONSTRAINT `recipe_categories_ibfk_1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`recipe_id`) ON DELETE CASCADE,
   CONSTRAINT `recipe_categories_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,7 +165,7 @@ CREATE TABLE `recipe_ingredients` (
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `recipe_ingredients_ibfk_1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`recipe_id`) ON DELETE CASCADE,
   CONSTRAINT `recipe_ingredients_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`ingredient_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,10 +194,11 @@ CREATE TABLE `recipes` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `author_id` int DEFAULT NULL,
   `servings` int DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`recipe_id`),
   KEY `fk_author` (`author_id`),
   CONSTRAINT `fk_author` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +207,7 @@ CREATE TABLE `recipes` (
 
 LOCK TABLES `recipes` WRITE;
 /*!40000 ALTER TABLE `recipes` DISABLE KEYS */;
-INSERT INTO `recipes` VALUES (1,'Couscous Salad','A nutritious and satisfying vegan couscous salad packed with colour, flavour and texture, from dried cranberries, pistachios and pine nuts.',NULL,10,'2025-07-25 17:57:08',1,6),(2,'Easy Lamb Biryani','A real centrepiece dish that’s surprisingly easy to make. Garnish with pomegranate seeds for a special finish.',NULL,90,'2025-07-25 18:04:30',1,7),(3,'Healthy Pizza','No yeast required for this easy, healthy pizza topped with colourful vegetables—ready in 30 minutes. Great for feeding kids in a hurry!',NULL,30,'2025-07-25 18:10:37',1,2),(4,'Mango Pie','This mouthwatering mango dessert is an Indian take on a traditional Thanksgiving pie.',NULL,60,'2025-07-25 18:14:43',1,16),(5,'Mushroom Doner','A meat-free mushroom ‘doner’ kebab packed with two types of sauces, pickles and veg. A mighty delicious vegetarian dish.',NULL,30,'2025-07-25 18:22:41',1,4),(6,'Vegan Pancakes','Quick and simple vegan pancakes made from storecupboard ingredients. Delicious with your favourite toppings.',NULL,20,'2025-07-26 11:02:11',1,4),(7,'Plum Clafoutis','A classic French dessert made with ripe plums and a light, custard-like batter.',NULL,60,'2025-07-31 18:20:14',1,6);
+INSERT INTO `recipes` VALUES (1,'Couscous Salad','A nutritious and satisfying vegan couscous salad packed with colour, flavour and texture, from dried cranberries, pistachios and pine nuts.',NULL,10,'2025-07-25 17:57:08',1,6,'assets/images/couscous_18053_16x9.jpg'),(2,'Easy Lamb Biryani','A real centrepiece dish that’s surprisingly easy to make. Garnish with pomegranate seeds for a special finish.',NULL,90,'2025-07-25 18:04:30',1,7,'assets/images/easy_lamb_biryani_46729_16x9.jpg'),(3,'Healthy Pizza','No yeast required for this easy, healthy pizza topped with colourful vegetables—ready in 30 minutes. Great for feeding kids in a hurry!',NULL,30,'2025-07-25 18:10:37',1,2,'assets/images/healthy_pizza_55143_16x9.jpg'),(4,'Mango Pie','This mouthwatering mango dessert is an Indian take on a traditional Thanksgiving pie.',NULL,60,'2025-07-25 18:14:43',1,16,'assets/images/mango_pie_18053_16x9.jpg'),(5,'Mushroom Doner','A meat-free mushroom ‘doner’ kebab packed with two types of sauces, pickles and veg. A mighty delicious vegetarian dish.',NULL,30,'2025-07-25 18:22:41',1,4,'assets/images/mushroom_doner_22676_16x9.jpg'),(6,'Vegan Pancakes','Quick and simple vegan pancakes made from storecupboard ingredients. Delicious with your favourite toppings.',NULL,20,'2025-07-26 11:02:11',1,4,'assets/images/vegan_american_pancakes_76094_16x9.jpg'),(7,'Plum Clafoutis','A classic French dessert made with ripe plums and a light, custard-like batter.',NULL,60,'2025-07-31 18:20:14',1,6,'assets/images/plumclafoutis_11536_16x9.jpg');
 /*!40000 ALTER TABLE `recipes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +227,7 @@ CREATE TABLE `steps` (
   PRIMARY KEY (`step_id`),
   KEY `recipe_id` (`recipe_id`),
   CONSTRAINT `steps_ibfk_1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`recipe_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,7 +255,7 @@ CREATE TABLE `users` (
   `dietary_preference` enum('none','vegan','vegetarian','pescetarian','gluten_free') DEFAULT 'none',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,4 +277,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-31 19:43:33
+-- Dump completed on 2025-08-01 12:59:44

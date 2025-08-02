@@ -112,6 +112,32 @@ We've got 6 BBC Food recipes in the database:
 - Mushroom Doner
 - Vegan Pancakes
 
+## Playwright + Typescript UI Automation
+
+### Setup
+1. Go to https://nodejs.org/
+2. Download the LTS version and run the installer.
+3. Confirm install via Command Prompt:
+   ```
+   node -v
+   npm -v
+   ```
+4. Go to playwright-recipe
+5. Go to the command prompt and run the following
+   - npm init -y
+   - npx playwright install
+   - npm install -D typescript ts-node @types/node
+   - npx playwright init - Select TypeScript when prompted.
+
+### Run Test
+1. To test Chrome run the following: npx playwright test --project=chromium
+2. To test Firefox run the following: npx playwright test --project=webkit
+3. Run All results
+
+### View Results
+1. Run the following command: npx playwright show-report
+
+
 ## Future improvements (if we had more time)
 
 - Better email validation
@@ -121,3 +147,7 @@ We've got 6 BBC Food recipes in the database:
 - User profile page (Name, Biography, Favourite Dish)
 - Instagram style feed that shows recipes a user has made and uploaded photos of
 - Rate limiting and security improvements
+
+## Disclaimer
+
+This project was developed for educational purposes as part of a university assignment. Images used within this recipe web app are sourced from various external websites and are not owned by the project author. All images remain the property of their respective owners. The use of these images is intended strictly for non-commercial, educational, and illustrative purposes under the principles of fair use. If you are a copyright holder and believe your image has been used improperly, please contact the University of Liverpool so that it can be removed or properly credited.

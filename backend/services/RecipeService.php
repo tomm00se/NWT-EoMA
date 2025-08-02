@@ -26,6 +26,7 @@ class RecipeService {
 
 
     public function createRecipe($data, $userId) {
+        $data['image_url'] = $this->handleRecipeImage($data['image_url'], $data['title']);
         $this->validateRecipeData($data);
         return $this->model->insertRecipe($data, $userId);
     }
@@ -82,6 +83,53 @@ class RecipeService {
 
         if (empty($data['categories']) || !is_array($data['categories'])) {
             throw new Exception("At least one category is required.");
+        }
+    }
+
+    private function handleRecipeImage($base64Image, $title) {
+        if (empty($base64Image)) {
+            throw new Exception("Image is required.");
+        }
+
+        $titleSanitized = preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($title));
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+            $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+            $type = strtolower($type[1]); // jpg, png, gif
+
+            if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                throw new Exception("Unsupported image type.");
+            }
+
+            $imageData = base64_decode($base64Image);
+            if ($imageData === false) {
+                throw new Exception("Base64 decode failed.");
+            }
+
+            $relativeDir = "assets/images/";
+            $baseFilename = "{$titleSanitized}." . $type;
+            $relativePath = $relativeDir . $baseFilename;
+            $saveDir = __DIR__ . '/../../frontend/' . $relativeDir;
+            $savePath = $saveDir . $baseFilename;
+
+            // Ensure directory exists
+            if (!file_exists($saveDir)) {
+                mkdir($saveDir, 0777, true);
+            }
+
+            // Avoid overwriting: add suffix if file exists
+            $counter = 1;
+            while (file_exists($savePath)) {
+                $baseFilename = "{$titleSanitized}_{$counter}." . $type;
+                $relativePath = $relativeDir . $baseFilename;
+                $savePath = $saveDir . $baseFilename;
+                $counter++;
+            }
+
+            file_put_contents($savePath, $imageData);
+
+            return $relativePath;
+        } else {
+            throw new Exception("Invalid image data.");
         }
     }
 }

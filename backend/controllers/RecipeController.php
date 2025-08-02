@@ -61,7 +61,7 @@ class RecipeController {
     $input = json_decode(file_get_contents("php://input"), true);
 
     // Validate required fields
-    $requiredFields = ['title', 'description', 'ingredients', 'steps', 'categories', 'total_time'];
+    $requiredFields = ['title', 'description', 'ingredients', 'steps', 'categories', 'total_time', 'image_url'];
     foreach ($requiredFields as $field) {
         if (!isset($input[$field]) || empty($input[$field])) {
             http_response_code(400);

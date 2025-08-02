@@ -68,9 +68,10 @@ class RecipeModel {
     public function insertRecipe(array $data, int $userId) {
     $this->db->beginTransaction();
 
+    var_dump($data);
     try {
         // Insert recipe
-        $stmt = $this->db->prepare("INSERT INTO recipes (title, description, image_url, total_time, created_at, author_id)
+        $stmt = $this->db->prepare("INSERT INTO recipes (title, description, image_path, total_time, created_at, author_id)
                                     VALUES (?, ?, ?, ?, NOW(), ?)");
         $stmt->execute([
             $data['title'],

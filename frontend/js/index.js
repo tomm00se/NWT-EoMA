@@ -325,7 +325,8 @@ function createRecipeCard(recipe) {
   return `
         <div class="recipe-card" data-recipe-id="${recipe.recipe_id}">
             <div class="recipe-image">
-                ${recipe.icon}
+                <img src="${recipe.image_path}" alt="${recipe.title}" class="recipe-image">
+                
                 <div class="${heartClass}" data-recipe-id="${
     recipe.recipe_id
   }" onclick="event.stopPropagation(); toggleFavorite(${recipe.recipe_id})">

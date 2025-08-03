@@ -1,131 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Recipe</title>
-    <style>
-        .inline { display: flex; gap: 8px; margin-bottom: 4px; }
-    </style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Recipe - Recipes Hub</title>
+    <link rel="stylesheet" href="./css/create-recipe.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  </head>
 <body>
-    <h2>Create Recipe</h2>
-    <form id="recipeForm">
-        <label>Title: <input type="text" name="title" required></label><br><br>
-        <label>Description:<br>
-            <textarea name="description" required></textarea>
-        </label><br><br>
+    <!-- Navigation Header -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="brand-logo-link">
+                    <img src="assets/icons/favicon.svg" alt="Recipe Hub Logo" class="brand-logo" />
+                </a>
+                <h1 class="brand-title">
+                    <a href="index.html">Recipe Hub</a>
+                </h1>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#recipes" class="nav-link">Recipes</a>
+                <a href="index.html#search" class="nav-link">Search</a>
+                <a href="signin.html" class="nav-link signin-link active">Sign In</a>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+            </div>
+        </div>
+    </nav>
 
-        <div>
-            <label>Ingredients:</label>
-            <div id="ingredients-list"></div>
-            <button type="button" onclick="addIngredient()">Add Ingredient</button>
-        </div><br>
+    <!-- Main Content -->
+    <main class="create-recipe-main">
+        <div class="container">
+            <div class="create-recipe-header">
+                <h1 class="page-title">Create New <span class="accent-text">Recipe</span></h1>
+                <p class="page-description">Share your culinary creativity with the community</p>
+            </div>
 
-        <div>
-            <label>Steps:</label>
-            <div id="steps-list"></div>
-            <button type="button" onclick="addStep()">Add Step</button>
-        </div><br>
+            <div class="recipe-form-container">
+                <form class="recipe-form" id="recipeForm">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Basic Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="recipeName" class="form-label">Recipe Name *</label>
+                            <input type="text" id="recipeName" name="recipeName" class="form-input" required placeholder="Enter recipe name">
+                        </div>
 
-        <label>Categories (comma separated):<br>
-            <input type="text" name="categories" required>
-        </label><br><br>
-        <label>Total Time (minutes): <input type="number" name="total_time" min="1" required></label><br><br>
-        <label>Image: <input type="file" name="image" accept="image/*" required></label><br><br>
-        <button type="submit">Create Recipe</button>
-    </form>
+                        <div class="form-group">
+                            <label for="recipeDescription" class="form-label">Description *</label>
+                            <textarea id="recipeDescription" name="recipeDescription" class="form-textarea" required placeholder="Brief description of your recipe" rows="3"></textarea>
+                        </div>
 
-    <div id="result"></div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cookingTime" class="form-label">Cooking Time (minutes) *</label>
+                                <input type="number" id="cookingTime" name="cookingTime" class="form-input" required min="1" placeholder="e.g., 30">
+                            </div>
+                            <div class="form-group">
+                                <label for="servings" class="form-label">Servings *</label>
+                                <input type="number" id="servings" name="servings" class="form-input" required min="1" placeholder="e.g., 4">
+                            </div>
+                        </div>
+                    </div>
 
-    <script>
-    // Dynamic ingredient fields
-    function addIngredient() {
-        const div = document.createElement('div');
-        div.className = 'inline';
-        div.innerHTML = `
-            <input type="text" placeholder="Name" class="ing-name" required>
-            <input type="text" placeholder="Quantity" class="ing-qty" required>
-            <input type="text" placeholder="Unit" class="ing-unit" required>
-            <button type="button" onclick="this.parentNode.remove()">Remove</button>
-        `;
-        document.getElementById('ingredients-list').appendChild(div);
-    }
-    // Dynamic step fields
-    function addStep() {
-        const div = document.createElement('div');
-        div.className = 'inline';
-        div.innerHTML = `
-            <input type="number" placeholder="Step #" class="step-num" min="1" required>
-            <input type="text" placeholder="Instructions" class="step-inst" required>
-            <input type="text" placeholder="Step Time" class="step-time" required>
-            <button type="button" onclick="this.parentNode.remove()">Remove</button>
-        `;
-        document.getElementById('steps-list').appendChild(div);
-    }
-    // Add one by default
-    addIngredient();
-    addStep();
+                    <!-- Categories Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Categories</h2>
+                        <div class="categories-grid">
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Breakfast">
+                                <span class="checkmark"></span>
+                                Breakfast
+                            </label>
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Main">
+                                <span class="checkmark"></span>
+                                Main Course
+                            </label>
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Dessert">
+                                <span class="checkmark"></span>
+                                Dessert
+                            </label>
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Vegetarian">
+                                <span class="checkmark"></span>
+                                Vegetarian
+                            </label>
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Vegan">
+                                <span class="checkmark"></span>
+                                Vegan
+                            </label>
+                            <label class="category-checkbox">
+                                <input type="checkbox" name="categories" value="Gluten-Free">
+                                <span class="checkmark"></span>
+                                Gluten-Free
+                            </label>
+                        </div>
+                    </div>
 
-    document.getElementById('recipeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+                    <!-- Ingredients Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Ingredients</h2>
+                        <div class="ingredients-container" id="ingredientsContainer">
+                            <div class="ingredient-item">
+                                <div class="form-row">
+                                    <div class="form-group flex-grow">
+                                        <input type="text" name="ingredientName" class="form-input" placeholder="Ingredient name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="ingredientAmount" class="form-input" placeholder="Amount" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="ingredientUnit" class="form-select">
+                                            <option value="cups">cups</option>
+                                            <option value="tbsp">tbsp</option>
+                                            <option value="tsp">tsp</option>
+                                            <option value="oz">oz</option>
+                                            <option value="lbs">lbs</option>
+                                            <option value="g">grams</option>
+                                            <option value="kg">kg</option>
+                                            <option value="ml">ml</option>
+                                            <option value="l">liters</option>
+                                            <option value="pieces">pieces</option>
+                                            <option value="to taste">to taste</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn-remove-ingredient" onclick="removeIngredient(this)" disabled>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline" id="addIngredientBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add Ingredient
+                        </button>
+                    </div>
 
-        const form = e.target;
-        const formData = new FormData(form);
+                    <!-- Instructions Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Instructions</h2>
+                        <div class="instructions-container" id="instructionsContainer">
+                            <div class="instruction-item">
+                                <div class="instruction-header">
+                                    <span class="step-number">1</span>
+                                    <button type="button" class="btn-remove-instruction" onclick="removeInstruction(this)" disabled>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <textarea name="instructionText" class="form-textarea" placeholder="Describe this step in detail" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline" id="addInstructionBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add Step
+                        </button>
+                    </div>
 
-        // Gather ingredients
-        const ingredients = [];
-        document.querySelectorAll('#ingredients-list .inline').forEach(div => {
-            ingredients.push({
-                name: div.querySelector('.ing-name').value,
-                quantity: div.querySelector('.ing-qty').value,
-                unit: div.querySelector('.ing-unit').value
-            });
-        });
+                    <!-- Recipe Image Upload Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Recipe Image</h2>
+                        
+                        <div class="form-group">
+                            <label for="recipeImage" class="form-label">Upload Recipe Photo</label>
+                            <div class="image-upload-container">
+                                <input type="file" id="recipeImage" name="recipeImage" class="image-input" accept="image/*" hidden>
+                                <div class="image-upload-area" id="imageUploadArea">
+                                    <div class="upload-placeholder" id="uploadPlaceholder">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="upload-icon">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                            <path d="M12,11L14,9V16H10V9L12,11Z"/>
+                                        </svg>
+                                        <p class="upload-text">Click to upload or drag and drop</p>
+                                        <p class="upload-subtext">PNG, JPG, JPEG up to 5MB</p>
+                                    </div>
+                                    <div class="image-preview" id="imagePreview" style="display: none;">
+                                        <img id="previewImage" src="" alt="Recipe preview">
+                                        <div class="image-overlay">
+                                            <button type="button" class="btn-change-image" id="changeImageBtn">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                                </svg>
+                                                Change Image
+                                            </button>
+                                            <button type="button" class="btn-remove-image" id="removeImageBtn">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="image-upload-info">
+                                <p class="form-help-text">Upload a photo of your finished recipe. This helps other users see what the final result should look like.</p>
+                            </div>
+                        </div>
+                    </div>
 
-        // Gather steps
-        const steps = [];
-        document.querySelectorAll('#steps-list .inline').forEach((div, idx) => {
-            steps.push({
-                step_number: div.querySelector('.step-num').value || (idx + 1),
-                instructions: div.querySelector('.step-inst').value,
-                step_time: div.querySelector('.step-time').value
-            });
-        });
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span class="btn-text">Create Recipe</span>
+                            <span class="btn-loading" style="display: none;">
+                                <svg class="loading-spinner" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/>
+                                </svg>
+                                Creating...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
 
-        // Read image as base64
-        const file = formData.get('image');
-        const reader = new FileReader();
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Recipe Created Successfully!</h3>
+                <button class="modal-close" id="closeSuccessModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">Your recipe has been created and saved successfully. It's now available in the recipe collection!</p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'">View All Recipes</button>
+                    <button class="btn btn-secondary" onclick="closeSuccessModal()">Create Another</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        reader.onload = function(event) {
-            const imageBase64 = event.target.result;
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Error Creating Recipe</h3>
+                <button class="modal-close" id="closeErrorModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="errorMessage">An error occurred while creating your recipe. Please try again.</p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="closeErrorModal()">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Prepare JSON payload
-            const payload = {
-                title: formData.get('title'),
-                description: formData.get('description'),
-                ingredients: ingredients,
-                steps: steps,
-                categories: formData.get('categories').split(',').map(c => c.trim()),
-                total_time: formData.get('total_time'),
-                image_url: imageBase64
-            };
+    <!-- Sign Out Modal (reused from index) -->
+    <div class="modal-overlay" id="signOutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Out</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">Are you sure you want to sign out?</p>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="cancelSignOut">Cancel</button>
+                    <button class="btn btn-primary" id="confirmSignOut">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            fetch('http://localhost/backend/public/api/recipes/create/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(err => {
-                document.getElementById('result').textContent = 'Error: ' + err;
-            });
-        };
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3 class="brand-title">Recipe Hub</h3>
+            <p class="footer-description">
+              Your ultimate destination for discovering and sharing simple and
+              amazing recipes.
+            </p>
+          </div>
+          <div class="footer-links">
+            <div class="link-group">
+              <h4 class="link-title">Quick Links</h4>
+              <a href="#home" class="footer-link">Home</a>
+              <a href="#recipes" class="footer-link">Recipes</a>
+              <a href="#search" class="footer-link">Search</a>
+            </div>
+            <div class="link-group">
+              <h4 class="link-title">Account</h4>
+              <a href="signin.html" class="footer-link">Sign In</a>
+              <a href="signin.html" class="footer-link">Register</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 Recipe Hub. This site is a demo for educational use.
+          </p>
+        </div>
+      </div>
+    </footer>
 
-        reader.readAsDataURL(file);
-    });
-    </script>
-</body>
+    <script src="./js/create-recipe.js"></script>
+  </body>
 </html>

@@ -1,7 +1,6 @@
-// Base URL for API calls
 const baseUrl = `http://localhost/backend/public/api`;
 
-// DOM Elements
+// Dom elements
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
 const recipeForm = document.getElementById("recipeForm");
@@ -340,9 +339,6 @@ function updateInstructionNumbers() {
 function setupImageUpload() {
     const imageInput = document.getElementById('recipeImage');
     const uploadArea = document.getElementById('imageUploadArea');
-    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImage = document.getElementById('previewImage');
     const changeImageBtn = document.getElementById('changeImageBtn');
     const removeImageBtn = document.getElementById('removeImageBtn');
 
@@ -388,9 +384,13 @@ function setupImageUpload() {
         uploadArea.classList.remove('drag-over');
         
         const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith('image/')) {
-            imageInput.files = files;
-            handleImageSelect({ target: { files: files } });
+        if (files.length > 0) {
+            if (isValidImageFile(files[0])) {
+                imageInput.files = files;
+                handleImageSelect({ target: { files: files } });
+            } else {
+                showFormError('Please select a valid image file (PNG, JPG, JPEG)');
+            }
         }
     });
 }
@@ -399,9 +399,11 @@ function handleImageSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    // Validate file type against whitelist
+    if (!isValidImageFile(file)) {
         showFormError('Please select a valid image file (PNG, JPG, JPEG)');
+        // Clear the input
+        event.target.value = '';
         return;
     }
 
@@ -409,6 +411,8 @@ function handleImageSelect(event) {
     const maxSize = 5 * 1024 * 1024; // 5MB in bytes
     if (file.size > maxSize) {
         showFormError('Image file size must be less than 5MB');
+        // Clear the input
+        event.target.value = '';
         return;
     }
 
@@ -418,6 +422,15 @@ function handleImageSelect(event) {
         showImagePreview(e.target.result);
     };
     reader.readAsDataURL(file);
+}
+
+// Image whitelist
+function isValidImageFile(file) {
+    const allowedTypes = [
+        'image/png',
+        'image/jpeg'
+    ];
+    return allowedTypes.includes(file.type);
 }
 
 function showImagePreview(imageSrc) {

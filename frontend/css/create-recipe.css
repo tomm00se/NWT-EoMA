@@ -150,8 +150,9 @@ body {
   transform: translateY(-1px);
 }
 
-.signin-link.active {
+.signin-link.user-greeting:hover {
   background-color: #e69500;
+  transform: translateY(-1px);
 }
 
 .nav-toggle {

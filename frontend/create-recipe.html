@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Recipe - Recipes Hub</title>
+    <title>Create Recipe - Recipe Hub</title>
     <link rel="stylesheet" href="./css/create-recipe.css" />
     <link rel="stylesheet" href="./css/index.css" />
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
@@ -11,28 +11,53 @@
 <body>
     <!-- Navigation Header -->
     <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" class="brand-logo-link">
-                    <img src="assets/icons/favicon.svg" alt="Recipe Hub Logo" class="brand-logo" />
-                </a>
-                <h1 class="brand-title">
-                    <a href="index.html">Recipe Hub</a>
-                </h1>
-            </div>
-            <div class="nav-menu" id="navMenu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="index.html#recipes" class="nav-link">Recipes</a>
-                <a href="index.html#search" class="nav-link">Search</a>
-                <a href="signin.html" class="nav-link signin-link active">Sign In</a>
-            </div>
-            <div class="nav-toggle" id="navToggle">
-                <span class="toggle-bar"></span>
-                <span class="toggle-bar"></span>
-                <span class="toggle-bar"></span>
-            </div>
+      <div class="nav-container">
+        <div class="nav-brand">
+          <a href="index.html" class="brand-logo-link">
+            <img
+              src="assets/icons/favicon.svg"
+              alt="Recipe Hub Logo"
+              class="brand-logo"
+            />
+          </a>
+          <h1 class="brand-title">
+            <a href="index.html">Recipe Hub</a>
+          </h1>
         </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="index.html#recipes" class="nav-link">Recipes</a>
+          <a href="index.html#search" class="nav-link">Search</a>
+          <a href="profile.html" class="nav-link signin-link user-greeting"
+            >Profile</a
+          >
+        </div>
+        <div class="nav-toggle" id="navToggle">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </div>
+      </div>
     </nav>
+
+    <!-- Sign Out Modal -->
+    <div class="modal-overlay" id="signOutModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Sign Out</div>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-message">Are you sure you want to sign out?</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" id="cancelSignOut">Cancel</button>
+            <button class="btn btn-primary" id="confirmSignOut">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Main Content -->
     <main class="create-recipe-main">
@@ -196,7 +221,7 @@
                         <div class="form-group">
                             <label for="recipeImage" class="form-label">Upload Recipe Photo</label>
                             <div class="image-upload-container">
-                                <input type="file" id="recipeImage" name="recipeImage" class="image-input" accept="image/*" hidden>
+                                <input type="file" id="recipeImage" name="recipeImage" class="image-input" accept="image/png,image/jpeg" hidden>
                                 <div class="image-upload-area" id="imageUploadArea">
                                     <div class="upload-placeholder" id="uploadPlaceholder">
                                         <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="upload-icon">
@@ -282,23 +307,6 @@
         </div>
     </div>
 
-    <!-- Sign Out Modal (reused from index) -->
-    <div class="modal-overlay" id="signOutModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Sign Out</h3>
-                <button class="modal-close" id="closeModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-message">Are you sure you want to sign out?</p>
-                <div class="modal-actions">
-                    <button class="btn btn-secondary" id="cancelSignOut">Cancel</button>
-                    <button class="btn btn-primary" id="confirmSignOut">Sign Out</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
@@ -313,14 +321,16 @@
           <div class="footer-links">
             <div class="link-group">
               <h4 class="link-title">Quick Links</h4>
-              <a href="#home" class="footer-link">Home</a>
-              <a href="#recipes" class="footer-link">Recipes</a>
-              <a href="#search" class="footer-link">Search</a>
+              <a href="index.html" class="footer-link">Home</a>
+              <a href="index.html#recipes" class="footer-link">Recipes</a>
+              <a href="index.html#search" class="footer-link">Search</a>
             </div>
             <div class="link-group">
               <h4 class="link-title">Account</h4>
-              <a href="signin.html" class="footer-link">Sign In</a>
-              <a href="signin.html" class="footer-link">Register</a>
+              <a href="profile.html" class="footer-link">Profile</a>
+              <a href="#" class="footer-link" id="footerSignOutLink"
+                >Sign Out</a
+              >
             </div>
           </div>
         </div>

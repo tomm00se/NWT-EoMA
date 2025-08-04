@@ -136,8 +136,8 @@ async function updateNavigationForUser() {
     
     if (signInLink) {
         if (user && user.name) {
-            signInLink.textContent = `Hello, ${user.name}!`;
-            signInLink.href = "#";
+            signInLink.textContent = "Profile";
+            signInLink.href = "profile.html";
             signInLink.classList.add("user-greeting");
             signInLink.addEventListener("click", function(e) {
                 e.preventDefault();

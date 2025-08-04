@@ -522,14 +522,14 @@ async function handleFormSubmit(e) {
         return;
     }
     
-    const formData = collectFormData();
+    const formData = await collectFormData();
     console.log('Form data collected:', formData);
     
     // Show loading state
     showLoadingState(true);
     
     try {
-        const response = await fetch(`${baseUrl}/recipes/create`, {
+        const response = await fetch(`${baseUrl}/recipes/create/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -539,7 +539,7 @@ async function handleFormSubmit(e) {
         
         console.log('API response status:', response.status);
         
-        if (response.ok) {
+        if (response.created) {
             const result = await response.json();
             console.log('Recipe created successfully:', result);
             showSuccessModal();
@@ -622,15 +622,36 @@ function showFormError(message) {
     }
 }
 
-function collectFormData() {
+//Transform image to base64
+function getImageBase64() {
+    return new Promise((resolve, reject) => {
+        const imageInput = document.getElementById('recipeImage');
+        if (!imageInput || !imageInput.files || imageInput.files.length === 0) {
+            resolve(null); // No image selected
+            return;
+        }
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            resolve(event.target.result); // base64 string
+        };
+        reader.onerror = function(err) {
+            reject(err);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function collectFormData() {
     const formData = new FormData(recipeForm);
     
     // Collect basic information
     const data = {
         title: formData.get('recipeName'),
         description: formData.get('recipeDescription'),
-        cooking_time: parseInt(formData.get('cookingTime')),
-        servings: parseInt(formData.get('servings'))
+        total_time: parseInt(formData.get('cookingTime')),
+       // quantity: parseInt(formData.get('servings'))
+       //we don't have a quantity field in database, so we can skip this
     };
     
     // Collect categories
@@ -659,19 +680,28 @@ function collectFormData() {
     data.ingredients = ingredients;
     
     // Collect instructions
-    const instructions = [];
+    const steps = [];
     const instructionItems = document.querySelectorAll('.instruction-item');
     instructionItems.forEach((item, index) => {
         const text = item.querySelector('textarea[name="instructionText"]').value.trim();
         if (text) {
-            instructions.push({
+            steps.push({
                 step_number: index + 1,
-                instruction: text
+                instructions: text,
+                step_time: 1
             });
         }
     });
-    data.instructions = instructions;
+
     
+    data.steps = steps;
+
+    //Get the image and transform it to base64
+    const imageBase64 = await getImageBase64();
+    if (imageBase64) {
+        data.image_url = imageBase64;
+    }
+
     return data;
 }
 

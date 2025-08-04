@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    console.log('Page loaded, initializing...');
     updateNavigationForUser();
     setupEventListeners();
     updateRemoveButtons();
@@ -59,9 +58,7 @@ window.addEventListener("scroll", () => {
 });
 
 // Setup all event listeners
-function setupEventListeners() {
-    console.log('Setting up event listeners...');
-    
+function setupEventListeners() {   
     // Form submission
     if (recipeForm) {
         recipeForm.addEventListener('submit', handleFormSubmit);
@@ -82,7 +79,6 @@ function setupEventListeners() {
     if (addIngredientBtn) {
         addIngredientBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Add ingredient clicked');
             addIngredientField();
         });
     }
@@ -90,7 +86,6 @@ function setupEventListeners() {
     if (addInstructionBtn) {
         addInstructionBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Add instruction clicked');
             addInstructionField();
         });
     }
@@ -224,7 +219,6 @@ async function handleLogout() {
 
 // Dynamic form field management
 function addIngredientField() {
-    console.log('Adding ingredient field...');
     const container = document.getElementById('ingredientsContainer');
     if (!container) {
         console.error('Ingredients container not found');
@@ -279,7 +273,6 @@ function createIngredientField() {
 }
 
 function addInstructionField() {
-    console.log('Adding instruction field...');
     const container = document.getElementById('instructionsContainer');
     if (!container) {
         console.error('Instructions container not found');
@@ -487,8 +480,6 @@ function clearImagePreview() {
 
 // Form reset function
 function resetForm() {
-    console.log('Resetting form...');
-    
     if (!recipeForm) {
         console.error('Recipe form not found');
         return;
@@ -536,14 +527,11 @@ function resetForm() {
     
     updateRemoveButtons();
     updateInstructionNumbers();
-    
-    console.log('Form reset complete');
 }
 
 // Form submission and validation
 async function handleFormSubmit(e) {
     e.preventDefault();
-    console.log('Form submission started...');
     
     // Show loading state
     const btnText = submitBtn.querySelector('.btn-text');
@@ -619,11 +607,9 @@ async function handleFormSubmit(e) {
                 steps: steps,
                 categories: categories,
                 total_time: formData.get('cookingTime'),
-                servings: formData.get('servings'),
+                servings: formData.get('servings'), // TODO: fix backend for servings input
                 image_url: event.target.result
             };
-            
-            console.log('Sending payload:', payload);
             
             try {
                 const response = await fetch(`${baseUrl}/recipes/create/`, {
@@ -637,7 +623,6 @@ async function handleFormSubmit(e) {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    console.log('Recipe created successfully:', data);
                     showSuccessModal();
                     resetForm();
                 } else {

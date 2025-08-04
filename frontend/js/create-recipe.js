@@ -444,7 +444,7 @@ function clearImagePreview() {
     if (imagePreview) imagePreview.style.display = 'none';
 }
 
-// Update the resetForm function to include image clearing
+// Form reset function
 function resetForm() {
     console.log('Resetting form...');
     
@@ -729,58 +729,6 @@ function closeAllModals() {
     closeSuccessModal();
     closeErrorModal();
     closeSignOutModalFunc();
-}
-
-// Form reset function
-function resetForm() {
-    console.log('Resetting form...');
-    
-    if (!recipeForm) {
-        console.error('Recipe form not found');
-        return;
-    }
-    
-    recipeForm.reset();
-    
-    // Reset dynamic fields to single items
-    const ingredientsContainer = document.getElementById('ingredientsContainer');
-    const instructionsContainer = document.getElementById('instructionsContainer');
-    
-    if (ingredientsContainer) {
-        // Clear all but the first ingredient
-        while (ingredientsContainer.children.length > 1) {
-            ingredientsContainer.removeChild(ingredientsContainer.lastChild);
-        }
-        
-        // Reset the remaining fields
-        const firstIngredientName = ingredientsContainer.querySelector('input[name="ingredientName"]');
-        const firstIngredientAmount = ingredientsContainer.querySelector('input[name="ingredientAmount"]');
-        const firstIngredientUnit = ingredientsContainer.querySelector('select[name="ingredientUnit"]');
-        
-        if (firstIngredientName) firstIngredientName.value = '';
-        if (firstIngredientAmount) firstIngredientAmount.value = '';
-        if (firstIngredientUnit) firstIngredientUnit.selectedIndex = 0;
-    }
-    
-    if (instructionsContainer) {
-        // Clear all but the first instruction
-        while (instructionsContainer.children.length > 1) {
-            instructionsContainer.removeChild(instructionsContainer.lastChild);
-        }
-        
-        // Reset the remaining fields
-        const firstInstructionText = instructionsContainer.querySelector('textarea[name="instructionText"]');
-        if (firstInstructionText) firstInstructionText.value = '';
-    }
-    
-    // Clear validation states
-    document.querySelectorAll('.form-error').forEach(error => error.remove());
-    document.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
-    
-    updateRemoveButtons();
-    updateInstructionNumbers();
-    
-    console.log('Form reset complete');
 }
 
 // Make functions global for onclick handlers

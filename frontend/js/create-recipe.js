@@ -1,10 +1,11 @@
 const baseUrl = `http://localhost/backend/public/api`;
 
-// Dom elements
+// DOM elements
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
 const recipeForm = document.getElementById("recipeForm");
 const submitBtn = document.getElementById("submitBtn");
+const footerSignOutLink = document.getElementById("footerSignOutLink");
 
 // check if user is authenticated
 function checkAuthentication() {
@@ -64,6 +65,14 @@ function setupEventListeners() {
     // Form submission
     if (recipeForm) {
         recipeForm.addEventListener('submit', handleFormSubmit);
+    }
+    
+    // Footer sign out link
+    if (footerSignOutLink) {
+        footerSignOutLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            openSignOutModal();
+        });
     }
     
     // Add buttons
@@ -161,10 +170,6 @@ async function updateNavigationForUser() {
             signInLink.textContent = "Profile";
             signInLink.href = "profile.html";
             signInLink.classList.add("user-greeting");
-            signInLink.addEventListener("click", function(e) {
-                e.preventDefault();
-                openSignOutModal();
-            });
         } else {
             signInLink.textContent = "Sign In";
             signInLink.href = "signin.html";

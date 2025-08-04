@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #ffa500 #202020;
 }
 
 body {
@@ -18,14 +20,6 @@ body {
   padding: 0 2rem;
 }
 
-/* Custom Scrollbar Styling */
-/* Firefox Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #ffa500 #202020;
-}
-
-/* Webkit Browsers */
 ::-webkit-scrollbar {
   width: 0.5rem;
   height: 0.5rem;
@@ -50,7 +44,6 @@ body {
   background-color: #202020;
 }
 
-/* Modal Specific Scrollbars */
 .modal-content::-webkit-scrollbar {
   width: 0.375rem;
 }
@@ -69,14 +62,14 @@ body {
   background-color: #e69500;
 }
 
-/* Mobile responsive adjustments */
+/* mobile responsiveness */
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
-    width: 0.25rem;    /* Thinner on mobile */
+    width: 0.25rem;
   }
 }
 
-/* Navigation Styling */
+/* navigation styling */
 .navbar {
   position: fixed;
   top: 0;
@@ -161,14 +154,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* User greeting styling when logged in */
-.signin-link.user-greeting {
-  background-color: #ffa500;
-  color: #202020 !important;
-  cursor: pointer;
-  font-weight: 600;
-}
-
 .signin-link.user-greeting:hover {
   background-color: #e69500;
   transform: translateY(-1px);
@@ -189,7 +174,7 @@ body {
   border-radius: 2px;
 }
 
-/* Hero Section */
+/* hero section */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -283,7 +268,7 @@ body {
   font-size: 0.875rem;
 }
 
-/* Button Styling */
+/* button styling */
 .btn {
   padding: 0.75rem 2rem;
   border: none;
@@ -344,7 +329,7 @@ body {
   transform: none !important;
 }
 
-/* Search Preview Section */
+/* search preview */
 .search-preview {
   padding: 5rem 0;
   background-color: #1a1a1a;
@@ -425,7 +410,7 @@ body {
   border-color: #ffa500;
 }
 
-/* Featured Recipes Section */
+/* featured recipes */
 .featured-recipes {
   padding: 5rem 0;
   background-color: #000000;
@@ -540,6 +525,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .recipe-time {
@@ -556,7 +542,7 @@ body {
   text-align: center;
 }
 
-/* Features Section */
+/* features */
 .features {
   padding: 5rem 0;
   background-color: #1a1a1a;
@@ -598,7 +584,7 @@ body {
   line-height: 1.6;
 }
 
-/* Call to Action Section */
+/* call to action */
 .cta {
   padding: 5rem 0;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
@@ -623,7 +609,7 @@ body {
   line-height: 1.7;
 }
 
-/* Footer */
+/* footer */
 .footer {
   background-color: #202020;
   padding: 3rem 0 1rem;
@@ -1031,7 +1017,7 @@ body {
   font-size: 0.875rem;
 }
 
-/* Responsive recipe modal */
+/* responsive recipe modal */
 @media (max-width: 768px) {
   .recipe-modal {
     width: 98%;
@@ -1084,7 +1070,7 @@ body {
   }
 }
 
-/* Star Rating System */
+/* star rating */
 .star-rating {
   display: flex;
   align-items: center;
@@ -1146,14 +1132,7 @@ body {
   border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
-/* Recipe card rating styles */
-.recipe-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
+/* recipe card rating styles */
 .recipe-rating-container {
   flex-shrink: 0;
 }
@@ -1167,7 +1146,7 @@ body {
   padding: 0.125rem;
 }
 
-/* Modal rating styles */
+/* modal rating */
 .modal-rating-container .star-interactive {
   font-size: 1.5rem;
   padding: 0.25rem;
@@ -1181,7 +1160,7 @@ body {
   font-size: 0.875rem;
 }
 
-/* Responsive star ratings */
+/* responsive star ratings */
 @media (max-width: 768px) {
   .recipe-meta {
     flex-direction: column;

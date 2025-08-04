@@ -52,10 +52,10 @@ async function updateNavigationForUser() {
   const signInLink = document.querySelector(".signin-link");
 
   if (user && user.name) {
-    signInLink.textContent = `Hello, ${user.name}!`;
-    signInLink.href = "#";
+    signInLink.textContent = "Profile";
+    signInLink.href = "profile.html";
     signInLink.classList.add("user-greeting");
-    signInLink.addEventListener("click", openModal);
+    signInLink.removeEventListener("click", openModal);
 
     // load favorites
     await loadUserFavorites();
@@ -325,7 +325,9 @@ function createRecipeCard(recipe) {
   return `
         <div class="recipe-card" data-recipe-id="${recipe.recipe_id}">
             <div class="recipe-image">
-                <img src="${recipe.image_path}" alt="${recipe.title}" class="recipe-image">
+                <img src="${recipe.image_path}" alt="${
+    recipe.title
+  }" class="recipe-image">
                 
                 <div class="${heartClass}" data-recipe-id="${
     recipe.recipe_id

@@ -78,7 +78,7 @@ This is our recipe web app project for our Networks and Web Technology module. I
 
 ### Step 5: Test it out
 
-1. **Open your browser** and go to `http://localhost/`
+1. **Open your browser** and go to `http://localhost/frontend`
 2. **Try registering** a new account
 3. **Browse some recipes** and test the search
 4. **Try rating and favoriting** some recipes

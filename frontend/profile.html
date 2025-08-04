@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Recipe Hub</title>
+    <link rel="stylesheet" href="./css/profile.css" />
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <a href="index.html" class="brand-logo-link">
+            <img
+              src="assets/icons/favicon.svg"
+              alt="Recipe Hub Logo"
+              class="brand-logo"
+            />
+          </a>
+          <h1 class="brand-title">
+            <a href="index.html">Recipe Hub</a>
+          </h1>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="index.html#recipes" class="nav-link">Recipes</a>
+          <a href="index.html#search" class="nav-link">Search</a>
+          <a href="profile.html" class="nav-link signin-link user-greeting"
+            >Profile</a
+          >
+        </div>
+        <div class="nav-toggle" id="navToggle">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="modal-overlay" id="signOutModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Sign Out</div>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-message">Are you sure you want to sign out?</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" id="cancelSignOut">Cancel</button>
+            <button class="btn btn-primary" id="confirmSignOut">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- profile -->
+    <main class="profile-main">
+      <div class="container">
+        <!-- profile heading -->
+        <section class="profile-header">
+          <div class="profile-info">
+            <h1 class="profile-name" id="profileName">Loading...</h1>
+            <p class="profile-email" id="profileEmail">Loading...</p>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="favoriteCount">0</span>
+                <span class="stat-label">Favorites</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="ratingCount">0</span>
+                <span class="stat-label">Ratings</span>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="btn btn-outline btn-small" id="signOutBtn">
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- favourite recipes -->
+        <div class="profile-sections">
+          <section class="profile-section">
+            <div class="section-header">
+              <h2 class="section-title">My Favorite Recipes</h2>
+              <div class="section-actions">
+                <button
+                  class="btn btn-outline btn-small"
+                  id="refreshFavoritesBtn"
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
+            <div class="favorites-container">
+              <div class="favorites-grid" id="favoritesGrid">
+                <!-- favorite recipes rendered here via loadFavoriteRecipes -->
+              </div>
+              <div class="empty-state" id="emptyFavorites">
+                <div class="empty-icon">❤️</div>
+                <h3 class="empty-title">No favorites yet</h3>
+                <p class="empty-description">
+                  Start exploring recipes and add them to your favorites!
+                </p>
+                <a href="index.html#recipes" class="btn btn-primary"
+                  >Explore Recipes</a
+                >
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3 class="brand-title">Recipe Hub</h3>
+            <p class="footer-description">
+              Your ultimate destination for discovering and sharing simple and
+              amazing recipes.
+            </p>
+          </div>
+          <div class="footer-links">
+            <div class="link-group">
+              <h4 class="link-title">Quick Links</h4>
+              <a href="index.html" class="footer-link">Home</a>
+              <a href="index.html#recipes" class="footer-link">Recipes</a>
+              <a href="index.html#search" class="footer-link">Search</a>
+            </div>
+            <div class="link-group">
+              <h4 class="link-title">Account</h4>
+              <a href="profile.html" class="footer-link">Profile</a>
+              <a href="#" class="footer-link" id="footerSignOutLink"
+                >Sign Out</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 Recipe Hub. This site is a demo for educational use.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./js/profile.js"></script>
+  </body>
+</html>

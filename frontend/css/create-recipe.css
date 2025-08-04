@@ -1,8 +1,9 @@
-/* Base body styling for consistent layout */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #ffa500 #202020;
 }
 
 body {
@@ -15,14 +16,6 @@ body {
   flex-direction: column;
 }
 
-/* Custom Scrollbar Styling */
-/* Firefox Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #ffa500 #202020;
-}
-
-/* Webkit Browsers */
 ::-webkit-scrollbar {
   width: 0.5rem;
   height: 0.5rem;
@@ -47,7 +40,6 @@ body {
   background-color: #202020;
 }
 
-/* Modal Specific Scrollbars */
 .modal-content::-webkit-scrollbar {
   width: 0.375rem;
 }
@@ -66,14 +58,14 @@ body {
   background-color: #e69500;
 }
 
-/* Mobile responsive adjustments */
+/* mobile responsiveness */
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
-    width: 0.25rem;    /* Thinner on mobile */
+    width: 0.25rem;
   }
 }
 
-/* Navigation Styling */
+/* navigation styling */
 .navbar {
   position: fixed;
   top: 0;
@@ -177,7 +169,7 @@ body {
   border-radius: 2px;
 }
 
-/* Creat Recipe Section */
+/* creat recipe section */
 .create-recipe-main {
     min-height: 100vh;
     padding-top: 6rem;
@@ -291,7 +283,7 @@ body {
     flex-grow: 1;
 }
 
-/* Categories Grid */
+/* categories grid */
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -353,7 +345,7 @@ body {
     color: #ffa500;
 }
 
-/* Dynamic Lists */
+/* dynamic lists */
 .ingredients-container,
 .instructions-container {
     margin-bottom: 1rem;
@@ -420,7 +412,7 @@ body {
     cursor: not-allowed;
 }
 
-/* Form Actions */
+/* form actions */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -444,7 +436,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Responsive Design */
+/* responsive design */
 @media (max-width: 768px) {
     .page-title {
         font-size: 2.5rem;
@@ -492,7 +484,7 @@ body {
     }
 }
 
-/* Animation for new items */
+/* animation for new items */
 .ingredient-item,
 .instruction-item {
     opacity: 0;
@@ -507,7 +499,7 @@ body {
     }
 }
 
-/* Success states */
+/* success states */
 .form-input.success,
 .form-textarea.success,
 .form-select.success {
@@ -520,7 +512,7 @@ body {
     border-color: #ff6b6b;
 }
 
-/* Validation messages */
+/* validation messages */
 .form-error {
     color: #ff6b6b;
     font-size: 0.875rem;
@@ -535,7 +527,7 @@ body {
     display: block;
 }
 
-/* Image Upload Section */
+/* image upload Section */
 .image-upload-container {
     position: relative;
 }
@@ -665,7 +657,7 @@ body {
     margin-top: 0.75rem;
 }
 
-/* Image upload responsive */
+/* image upload responsive */
 @media (max-width: 768px) {
     .image-overlay {
         opacity: 1;

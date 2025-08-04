@@ -147,6 +147,8 @@ We've got 6 BBC Food recipes in the database:
 - User profile page (Name, Biography, Favourite Dish)
 - Instagram style feed that shows recipes a user has made and uploaded photos of
 - Rate limiting and security improvements
+- Migration to using a modern tech stack - MongoDB + React/Next.JS Framework for hybrid (server/client side rendering)
+- Our front end was very repetitive. Using React Components, reusability and readability would be improved dramatically.
 
 ## Disclaimer
 

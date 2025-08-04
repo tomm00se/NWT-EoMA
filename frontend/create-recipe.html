@@ -285,7 +285,7 @@
                 <p class="modal-message">Your recipe has been created and saved successfully. It's now available in the recipe collection!</p>
                 <div class="modal-actions">
                     <button class="btn btn-primary" onclick="window.location.href='index.html'">View All Recipes</button>
-                    <button class="btn btn-secondary" onclick="closeSuccessModal()">Create Another</button>
+                    <button class="btn btn-secondary" id="create-another-btn">Create Another</button>
                 </div>
             </div>
         </div>
@@ -301,7 +301,7 @@
             <div class="modal-body">
                 <p class="modal-message" id="errorMessage">An error occurred while creating your recipe. Please try again.</p>
                 <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="closeErrorModal()">Try Again</button>
+                    <button class="btn btn-primary" onclick="closeErrorModalFunc()">Try Again</button>
                 </div>
             </div>
         </div>

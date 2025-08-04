@@ -6,8 +6,23 @@ const navMenu = document.getElementById("navMenu");
 const recipeForm = document.getElementById("recipeForm");
 const submitBtn = document.getElementById("submitBtn");
 
+// check if user is authenticated
+function checkAuthentication() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    // redirect to signin page
+    window.location.href = "signin.html";
+    return false;
+  }
+  return true;
+}
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
+    if (!checkAuthentication()) {
+        return;
+    }
+
     console.log('Page loaded, initializing...');
     updateNavigationForUser();
     setupEventListeners();
@@ -92,8 +107,16 @@ function setupModalControls() {
     
     // Success modal
     const closeSuccessModal = document.getElementById("closeSuccessModal");
+    const createAnotherBtn = document.getElementById("create-another-btn");
+    
     if (closeSuccessModal) {
         closeSuccessModal.addEventListener('click', closeSuccessModalFunc);
+    }
+    if (createAnotherBtn) {
+        createAnotherBtn.addEventListener('click', function() {
+            closeSuccessModalFunc();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     }
     if (successModal) {
         successModal.addEventListener('click', (e) => {
@@ -515,95 +538,133 @@ function resetForm() {
 // Form submission and validation
 async function handleFormSubmit(e) {
     e.preventDefault();
-    console.log('Form submitted');
-    
-    if (!validateForm()) {
-        console.log('Form validation failed');
-        return;
-    }
-    
-    const formData = collectFormData();
-    console.log('Form data collected:', formData);
+    console.log('Form submission started...');
     
     // Show loading state
-    showLoadingState(true);
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+    
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline-flex';
+    submitBtn.disabled = true;
     
     try {
-        const response = await fetch(`${baseUrl}/recipes/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
+        const formData = new FormData(e.target);
+        
+        // Collect categories (checkboxes)
+        const categories = [];
+        document.querySelectorAll('input[name="categories"]:checked').forEach(checkbox => {
+            categories.push(checkbox.value);
         });
         
-        console.log('API response status:', response.status);
+        // Collect ingredients
+        const ingredients = [];
+        document.querySelectorAll('.ingredient-item').forEach(item => {
+            const name = item.querySelector('input[name="ingredientName"]').value.trim();
+            const amount = item.querySelector('input[name="ingredientAmount"]').value.trim();
+            const unit = item.querySelector('select[name="ingredientUnit"]').value;
+            
+            if (name && amount) {
+                ingredients.push({
+                    name: name,
+                    quantity: amount,
+                    unit: unit
+                });
+            }
+        });
         
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Recipe created successfully:', result);
-            showSuccessModal();
-            resetForm();
-        } else {
-            const errorData = await response.json();
-            console.error('API error:', errorData);
-            showErrorModal(errorData.message || 'Failed to create recipe. Please try again.');
+        // Collect instructions/steps
+        const steps = [];
+        document.querySelectorAll('.instruction-item').forEach((item, index) => {
+            const instructions = item.querySelector('textarea[name="instructionText"]').value.trim();
+            
+            if (instructions) {
+                steps.push({
+                    step_number: index + 1,
+                    instructions: instructions,
+                    step_time: "0" // Default to 0 since no time field in new form
+                });
+            }
+        });
+        
+        // Validate required data
+        if (categories.length === 0) {
+            throw new Error('Please select at least one category.');
         }
+        if (ingredients.length === 0) {
+            throw new Error('Please add at least one ingredient.');
+        }
+        if (steps.length === 0) {
+            throw new Error('Please add at least one instruction step.');
+        }
+        
+        // Handle image
+        const imageFile = formData.get('recipeImage');
+        if (!imageFile || imageFile.size === 0) {
+            throw new Error('Please select an image for your recipe.');
+        }
+        
+        // Convert image to base64
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+            const payload = {
+                title: formData.get('recipeName'),
+                description: formData.get('recipeDescription'),
+                ingredients: ingredients,
+                steps: steps,
+                categories: categories,
+                total_time: formData.get('cookingTime'),
+                servings: formData.get('servings'),
+                image_url: event.target.result
+            };
+            
+            console.log('Sending payload:', payload);
+            
+            try {
+                const response = await fetch(`${baseUrl}/recipes/create/`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    console.log('Recipe created successfully:', data);
+                    showSuccessModal();
+                    resetForm();
+                } else {
+                    console.error('Server error:', data);
+                    showErrorModal(data.message || 'Failed to create recipe. Please try again.');
+                }
+            } catch (networkError) {
+                console.error('Network error:', networkError);
+                showErrorModal('Network error. Please check your connection and try again.');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        };
+        
+        reader.onerror = function() {
+            throw new Error('Failed to process image. Please try a different image.');
+        };
+        
+        reader.readAsDataURL(imageFile);
+        
     } catch (error) {
-        console.error('Network error creating recipe:', error);
-        showErrorModal('Network error. Please check your connection and try again.');
-    } finally {
-        showLoadingState(false);
+        console.error('Form validation error:', error);
+        showErrorModal(error.message);
+        
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        submitBtn.disabled = false;
     }
-}
-
-function validateForm() {
-    let isValid = true;
-    const requiredFields = recipeForm.querySelectorAll('[required]');
-    
-    // Clear previous validation states
-    document.querySelectorAll('.form-error').forEach(error => error.remove());
-    document.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
-    
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            markFieldAsError(field, 'This field is required');
-            isValid = false;
-        }
-    });
-    
-    // Validate at least one category is selected
-    const categories = document.querySelectorAll('input[name="categories"]:checked');
-    if (categories.length === 0) {
-        showFormError('Please select at least one category');
-        isValid = false;
-    }
-    
-    // Validate ingredients
-    const ingredientNames = document.querySelectorAll('input[name="ingredientName"]');
-    const ingredientAmounts = document.querySelectorAll('input[name="ingredientAmount"]');
-    
-    if (ingredientNames.length === 0) {
-        showFormError('Please add at least one ingredient');
-        isValid = false;
-    }
-    
-    // Validate instructions
-    const instructions = document.querySelectorAll('textarea[name="instructionText"]');
-    if (instructions.length === 0) {
-        showFormError('Please add at least one instruction step');
-        isValid = false;
-    }
-    
-    return isValid;
-}
-
-function markFieldAsError(field, message) {
-    field.classList.add('error');
-    const errorElement = document.createElement('span');
-    errorElement.className = 'form-error';
-    errorElement.textContent = message;
-    field.parentNode.appendChild(errorElement);
 }
 
 function showFormError(message) {
@@ -622,76 +683,6 @@ function showFormError(message) {
     }
 }
 
-function collectFormData() {
-    const formData = new FormData(recipeForm);
-    
-    // Collect basic information
-    const data = {
-        title: formData.get('recipeName'),
-        description: formData.get('recipeDescription'),
-        cooking_time: parseInt(formData.get('cookingTime')),
-        servings: parseInt(formData.get('servings'))
-    };
-    
-    // Collect categories
-    const categories = [];
-    document.querySelectorAll('input[name="categories"]:checked').forEach(checkbox => {
-        categories.push(checkbox.value);
-    });
-    data.categories = categories;
-    
-    // Collect ingredients
-    const ingredients = [];
-    const ingredientItems = document.querySelectorAll('.ingredient-item');
-    ingredientItems.forEach(item => {
-        const name = item.querySelector('input[name="ingredientName"]').value.trim();
-        const amount = item.querySelector('input[name="ingredientAmount"]').value.trim();
-        const unit = item.querySelector('select[name="ingredientUnit"]').value;
-        
-        if (name && amount) {
-            ingredients.push({
-                name: name,
-                amount: amount,
-                unit: unit
-            });
-        }
-    });
-    data.ingredients = ingredients;
-    
-    // Collect instructions
-    const instructions = [];
-    const instructionItems = document.querySelectorAll('.instruction-item');
-    instructionItems.forEach((item, index) => {
-        const text = item.querySelector('textarea[name="instructionText"]').value.trim();
-        if (text) {
-            instructions.push({
-                step_number: index + 1,
-                instruction: text
-            });
-        }
-    });
-    data.instructions = instructions;
-    
-    return data;
-}
-
-function showLoadingState(isLoading) {
-    const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
-    const btnLoading = submitBtn ? submitBtn.querySelector('.btn-loading') : null;
-    
-    if (submitBtn) {
-        if (isLoading) {
-            if (btnText) btnText.style.display = 'none';
-            if (btnLoading) btnLoading.style.display = 'flex';
-            submitBtn.disabled = true;
-        } else {
-            if (btnText) btnText.style.display = 'inline';
-            if (btnLoading) btnLoading.style.display = 'none';
-            submitBtn.disabled = false;
-        }
-    }
-}
-
 // Modal functions
 function showSuccessModal() {
     const successModal = document.getElementById("successModal");
@@ -701,16 +692,12 @@ function showSuccessModal() {
     }
 }
 
-function closeSuccessModal() {
+function closeSuccessModalFunc() {
     const successModal = document.getElementById("successModal");
     if (successModal) {
         successModal.classList.remove('active');
         document.body.style.overflow = '';
     }
-}
-
-function closeSuccessModalFunc() {
-    closeSuccessModal();
 }
 
 function showErrorModal(message) {
@@ -726,7 +713,7 @@ function showErrorModal(message) {
     }
 }
 
-function closeErrorModal() {
+function closeErrorModalFunc() {
     const errorModal = document.getElementById("errorModal");
     if (errorModal) {
         errorModal.classList.remove('active');
@@ -734,13 +721,9 @@ function closeErrorModal() {
     }
 }
 
-function closeErrorModalFunc() {
-    closeErrorModal();
-}
-
 function closeAllModals() {
-    closeSuccessModal();
-    closeErrorModal();
+    closeSuccessModalFunc();
+    closeErrorModalFunc();
     closeSignOutModalFunc();
 }
 
@@ -748,4 +731,4 @@ function closeAllModals() {
 window.removeIngredient = removeIngredient;
 window.removeInstruction = removeInstruction;
 window.resetForm = resetForm;
-window.closeSuccessModal = closeSuccessModal;
+window.closeSuccessModalFunc = closeSuccessModalFunc;

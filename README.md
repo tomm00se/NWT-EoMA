@@ -61,6 +61,7 @@ This is our recipe web app project for our Networks and Web Technology module. I
    - Select `DB/populated_database_EOM.sql`
    - Set the default schema to `recipe_app_group_a`
    - Click "Start Import"
+   - The database uses the utf8mb4_bin collation for strict binary comparison and full Unicode support.
 
 5. **Check it worked** - you should see tables like `users`, `recipes`, `categories`, etc.
 
@@ -104,13 +105,14 @@ This is our recipe web app project for our Networks and Web Technology module. I
 
 ## Sample recipes included
 
-We've got 6 BBC Food recipes in the database:
+We've got 7 BBC Food recipes in the database:
 - Couscous Salad
 - Easy Lamb Biryani
 - Healthy Pizza
 - Mango Pie
 - Mushroom Doner
 - Vegan Pancakes
+- Plum clafoutis
 
 ## Playwright + Typescript UI Automation
 
